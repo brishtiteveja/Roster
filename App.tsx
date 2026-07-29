@@ -13,6 +13,8 @@ import { ObservatoryScreen } from './src/screens/ObservatoryScreen';
 import { SeasonEndScreen } from './src/screens/SeasonEndScreen';
 import { ProfileScreen } from './src/screens/ProfileScreen';
 import { MatchOverlay } from './src/components/MatchOverlay';
+import { ChatOverlay } from './src/components/ChatOverlay';
+import { GraduationOverlay } from './src/components/GraduationOverlay';
 import { DeckIcon, HeartIcon, PulseIcon, PersonIcon } from './src/components/icons';
 
 type Tab = 'flow' | 'connections' | 'observatory' | 'profile';
@@ -29,7 +31,7 @@ function phaseTag(phase: string, week: number): string {
 }
 
 function Shell() {
-  const { state } = useStore();
+  const { state, openChat } = useStore();
   const [tab, setTab] = useState<Tab>('flow');
   const [matchSeenWeek, setMatchSeenWeek] = useState(0);
   const onboarding = state.phase === 'ONBOARDING';
@@ -52,6 +54,13 @@ function Shell() {
   const matchPartner = state.playerIntrosThisWeek[0];
   const showMatch =
     state.phase === 'RESULTS' && !!matchPartner && matchSeenWeek !== state.week;
+  const matchConn = matchPartner
+    ? state.connections.find(
+        (c) =>
+          c.weekIntroduced === state.week &&
+          ((c.a === state.player.id && c.b === matchPartner) || (c.b === state.player.id && c.a === matchPartner))
+      )
+    : undefined;
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -87,15 +96,23 @@ function Shell() {
         </View>
       )}
 
+      {state.chatOpen && <ChatOverlay connId={state.chatOpen} />}
+
       {showMatch && (
         <MatchOverlay
           partnerName={state.byId.get(matchPartner)?.name ?? matchPartner}
           partnerSeed={matchPartner}
           week={state.week}
-          onHello={() => { setMatchSeenWeek(state.week); setTab('connections'); }}
+          onHello={() => {
+            setMatchSeenWeek(state.week);
+            setTab('connections');
+            if (matchConn) openChat(matchConn.id);
+          }}
           onDismiss={() => setMatchSeenWeek(state.week)}
         />
       )}
+
+      {(state.graduatePrompt || state.celebrate) && <GraduationOverlay />}
     </SafeAreaView>
   );
 }

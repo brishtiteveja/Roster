@@ -4,6 +4,7 @@ import { PROPOSED } from '../data/persona';
 import {
   GameState, initSeason, buildBoard, togglePick, runClearing, advanceWeek,
   vote, markMet, closeNow, reportSafety, graduateNow,
+  sendMessage, receiveReply, openChat, requestGraduate, confirmGraduate, dismissCelebrate,
 } from './orchestration';
 
 type Action =
@@ -16,6 +17,12 @@ type Action =
   | { type: 'CLOSE'; connId: string }
   | { type: 'REPORT'; connId: string }
   | { type: 'GRADUATE'; connId: string }
+  | { type: 'OPEN_CHAT'; connId: string | null }
+  | { type: 'SEND_MESSAGE'; connId: string; text: string }
+  | { type: 'RECEIVE_REPLY'; connId: string }
+  | { type: 'REQUEST_GRADUATE'; connId: string | null }
+  | { type: 'CONFIRM_GRADUATE'; connId: string }
+  | { type: 'DISMISS_CELEBRATE' }
   | { type: 'ADVANCE' }
   | { type: 'RESET'; seed: string };
 
@@ -49,6 +56,18 @@ function reducer(state: GameState, action: Action): GameState {
       return reportSafety(state, action.connId);
     case 'GRADUATE':
       return graduateNow(state, action.connId);
+    case 'OPEN_CHAT':
+      return openChat(state, action.connId);
+    case 'SEND_MESSAGE':
+      return sendMessage(state, action.connId, action.text);
+    case 'RECEIVE_REPLY':
+      return receiveReply(state, action.connId);
+    case 'REQUEST_GRADUATE':
+      return requestGraduate(state, action.connId);
+    case 'CONFIRM_GRADUATE':
+      return confirmGraduate(state, action.connId);
+    case 'DISMISS_CELEBRATE':
+      return dismissCelebrate(state);
     case 'ADVANCE':
       return advanceWeek(state);
     case 'RESET':
@@ -69,6 +88,11 @@ interface Store {
   close: (connId: string) => void;
   report: (connId: string) => void;
   graduate: (connId: string) => void;
+  openChat: (connId: string | null) => void;
+  send: (connId: string, text: string) => void;
+  requestGraduate: (connId: string | null) => void;
+  confirmGraduate: (connId: string) => void;
+  dismissCelebrate: () => void;
   advance: () => void;
   reset: (seed: string) => void;
 }
@@ -89,6 +113,15 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       close: (connId) => dispatch({ type: 'CLOSE', connId }),
       report: (connId) => dispatch({ type: 'REPORT', connId }),
       graduate: (connId) => dispatch({ type: 'GRADUATE', connId }),
+      openChat: (connId) => dispatch({ type: 'OPEN_CHAT', connId }),
+      send: (connId, text) => {
+        dispatch({ type: 'SEND_MESSAGE', connId, text });
+        // The partner replies after a beat; content is deterministic, timing is theater.
+        setTimeout(() => dispatch({ type: 'RECEIVE_REPLY', connId }), 1000 + Math.random() * 600);
+      },
+      requestGraduate: (connId) => dispatch({ type: 'REQUEST_GRADUATE', connId }),
+      confirmGraduate: (connId) => dispatch({ type: 'CONFIRM_GRADUATE', connId }),
+      dismissCelebrate: () => dispatch({ type: 'DISMISS_CELEBRATE' }),
       advance: () => dispatch({ type: 'ADVANCE' }),
       reset: (seed) => dispatch({ type: 'RESET', seed }),
     }),

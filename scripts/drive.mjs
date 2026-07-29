@@ -77,6 +77,30 @@ try {
   if (await keepLooking.count()) { await keepLooking.first().click(); await page.waitForTimeout(400); }
   await shot('05-results');
 
+  // Chat: open the new connection's thread, send a message, get the reply.
+  await tap('Connections');
+  const msgBtn = page.getByText(/^Message( · \d+)?$/).first();
+  await msgBtn.click();
+  await page.waitForTimeout(500);
+  await shot('07a-chat');
+  const input = page.getByPlaceholder(/Message /).first();
+  await input.fill('Hey! Saturday it is — I know a place.');
+  await input.press('Enter');
+  await page.waitForTimeout(2200);
+  await shot('07b-chat-reply');
+
+  // Graduation: confirm flow from the chat header, then the celebration.
+  // Overlays render last in the DOM, so .last() targets them, not covered buttons.
+  await page.getByText('Graduate', { exact: true }).last().click();
+  await page.waitForTimeout(600);
+  await shot('09-graduate-confirm');
+  await page.getByText(/We're leaving together/).last().click();
+  await page.waitForTimeout(800);
+  await shot('09b-graduated');
+  await page.getByText('Take a bow', { exact: true }).last().click();
+  await page.waitForTimeout(400);
+  await tap('This week');
+
   // Play a few more weeks so the observatory has real data.
   async function sealSome() {
     for (let i = 0; i < 2; i++) {

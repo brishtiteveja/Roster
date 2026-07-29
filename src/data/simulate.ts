@@ -78,3 +78,58 @@ export function simCheckpointVote(
   if (r < keep + 0.08) return 'MORE_TIME';
   return 'CLOSE';
 }
+
+// ---- simulated conversation ------------------------------------------------
+
+const ICEBREAKERS = [
+  'We both kept {win} open. That felt like a sign worth spending my opening on.',
+  'Hi! I saw {int} on your card and picked before I could overthink it.',
+  'One opening a week and I spent it here. No pressure, but also — some pressure.',
+  'So the market says we both made room. What are we doing with it?',
+  'I picked you on the broadening edge, which is the algorithm’s way of saying "be brave."',
+  'Okay, sealed pick, mutual clearing — the ceremony is done. Now we just… talk?',
+];
+
+const EARLY_REPLIES = [
+  'Ha! I was hoping you’d say something first. How’s your week looking?',
+  'Honestly relieved it was mutual. The quiet weeks make you wonder.',
+  'That made me smile. So — {int}: how did that start for you?',
+  'Good opening. I’m giving it an 8. What’s your {win} usually like?',
+  'I read your card three times before sealing. Zero regrets so far.',
+];
+
+const MID_REPLIES = [
+  'Same. Also I appreciate that neither of us is juggling ten of these.',
+  'You’re easy to talk to. The two-connection cap suddenly makes sense.',
+  'I keep thinking about what you said. Also: strong chip taste.',
+  'Careful, I’m starting to look forward to these messages.',
+  'This is the least exhausting this has ever felt, for the record.',
+];
+
+const PLAN_REPLIES = [
+  'Let’s actually do it — {win}? There’s a place I’ve been meaning to try.',
+  'Proposal: {win}, in person, phones away. The checkpoint can find us there.',
+  'Yes. {win}. If it goes well we tell the checkpoint KEEP together.',
+  'I’m free {win}. Let’s give the market something to write home about.',
+];
+
+function fill(line: string, p: Persona, sharedWin: string, sharedInt: string): string {
+  return line.replace('{win}', sharedWin).replace('{int}', sharedInt);
+}
+
+/** Partner's opening message, sent at the clearing. Deterministic. */
+export function icebreaker(
+  p: Persona, sharedWin: string, sharedInt: string, connId: string, seed: string
+): string {
+  const rng = new RNG(`ice::${seed}::${connId}`);
+  return fill(rng.pick(ICEBREAKERS), p, sharedWin, sharedInt);
+}
+
+/** Partner's reply #`count` in a thread. Deterministic given seed+conn+count. */
+export function simReply(
+  p: Persona, sharedWin: string, sharedInt: string, connId: string, count: number, seed: string
+): string {
+  const rng = new RNG(`chat::${seed}::${connId}::${count}`);
+  const pool = count <= 1 ? EARLY_REPLIES : count <= 3 ? MID_REPLIES : PLAN_REPLIES;
+  return fill(rng.pick(pool), p, sharedWin, sharedInt);
+}

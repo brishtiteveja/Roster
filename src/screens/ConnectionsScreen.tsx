@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { colors, space } from '../theme';
 import { useStore } from '../state/store';
 import { playerConnections } from '../state/orchestration';
@@ -10,7 +10,7 @@ import { Avatar } from '../components/Avatar';
 import { ConnectionCard } from '../components/ConnectionCard';
 
 export function ConnectionsScreen() {
-  const { state } = useStore();
+  const { state, openChat } = useStore();
   const all = playerConnections(state);
   const open = all.filter((c) => isOpen(c.state));
   const past = all.filter((c) => !isOpen(c.state));
@@ -29,11 +29,11 @@ export function ConnectionsScreen() {
             const pid = c.a === state.player.id ? c.b : c.a;
             const isNew = c.weekIntroduced === state.week;
             return (
-              <View key={c.id} style={styles.stripItem}>
+              <Pressable key={c.id} style={styles.stripItem} onPress={() => openChat(c.id)}>
                 <Avatar seed={pid} name={state.byId.get(pid)?.name ?? ''} size={68} ring={isNew ? 'lamp' : 'muted'} />
                 <Text style={styles.stripName}>{state.byId.get(pid)?.name}</Text>
                 {isNew && <Text style={styles.newTag}>NEW</Text>}
-              </View>
+              </Pressable>
             );
           })}
         </View>

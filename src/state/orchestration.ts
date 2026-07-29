@@ -5,8 +5,14 @@ import {
   safetyClose, graduate, isOpen, castVote, CheckpointVote,
 } from '../engine';
 import { RNG } from '../engine/rng';
-import { Persona, buildCohort, makePlayer } from '../data/cohort';
-import { declaresIn, simulatedPicks, simCheckpointVote } from '../data/simulate';
+import { Persona, buildCohort, makePlayer, WINDOWS } from '../data/cohort';
+import { declaresIn, simulatedPicks, simCheckpointVote, icebreaker, simReply } from '../data/simulate';
+
+export interface ChatMessage {
+  from: string;
+  text: string;
+  week: number;
+}
 
 export type Phase = 'ONBOARDING' | 'DECLARE' | 'PICK' | 'RESULTS' | 'SEASON_END';
 
@@ -43,6 +49,14 @@ export interface GameState {
   approvedEvidence: string[];
   log: string[];
   metrics: WeekMetric[];
+
+  /** per-connection message threads (player-involved connections only). */
+  messages: Record<string, ChatMessage[]>;
+  /** UI: which connection's chat is open. */
+  chatOpen: string | null;
+  /** UI: graduation confirm prompt / celebration for a connection id. */
+  graduatePrompt: string | null;
+  celebrate: string | null;
 }
 
 const openStates = (c: Connection) => isOpen(c.state);
@@ -86,7 +100,20 @@ export function initSeason(seed: string): GameState {
     approvedEvidence: [],
     log: ['Season 0 · six weeks · one city. Everyone here declared an opening.'],
     metrics: [],
+    messages: {},
+    chatOpen: null,
+    graduatePrompt: null,
+    celebrate: null,
   };
+}
+
+/** Best shared window/interest labels for conversation flavour. */
+function sharedFlavour(state: GameState, partnerId: string): { win: string; int: string } {
+  const p = state.player;
+  const c = state.byId.get(partnerId);
+  const win = c ? p.windows.find((w) => c.windows.includes(w)) : undefined;
+  const int = c ? p.interests.find((i) => c.interests.includes(i)) : undefined;
+  return { win: win !== undefined ? WINDOWS[win] : 'the weekend', int: int ?? 'your card' };
 }
 
 /** Who is eligible to appear on boards this week: declared In and below K_ACTIVE. */
@@ -216,12 +243,27 @@ export function runClearing(state: GameState): GameState {
     }
   }
 
+  // The partner opens the thread at the clearing — a first message, on the house.
+  const messages = { ...state.messages };
+  for (const conn of connections) {
+    const involvesPlayer = conn.a === state.player.id || conn.b === state.player.id;
+    if (!involvesPlayer || conn.weekIntroduced !== state.week || messages[conn.id]) continue;
+    const pid = conn.a === state.player.id ? conn.b : conn.a;
+    const partner = state.byId.get(pid);
+    if (!partner) continue;
+    const { win, int } = sharedFlavour(state, pid);
+    messages[conn.id] = [
+      { from: pid, text: icebreaker(partner, win, int, conn.id, state.seed), week: state.week },
+    ];
+  }
+
   const next: GameState = {
     ...state,
     submitted: true,
     lastClearing: clearing,
     playerIntrosThisWeek: playerIntros,
     connections,
+    messages,
     weeksUncleared,
     weeksWithoutIntro,
     phase: 'RESULTS',
@@ -309,6 +351,55 @@ export function graduateNow(state: GameState, connId: string): GameState {
   next.activeCount = recomputeActive(next);
   next.log = [...state.log, `You and ${name(state, otherParty(state, connId))} graduated — you both leave the market. 🎉`];
   return next;
+}
+
+/** Player sends a message — conversation is what keeps a connection alive (§4). */
+export function sendMessage(state: GameState, connId: string, text: string): GameState {
+  const trimmed = text.trim();
+  if (!trimmed) return state;
+  const msgs = state.messages[connId] ?? [];
+  return {
+    ...state,
+    messages: { ...state.messages, [connId]: [...msgs, { from: state.player.id, text: trimmed, week: state.week }] },
+    connections: state.connections.map((c) =>
+      c.id === connId ? { ...c, activeConversation: true } : c
+    ),
+  };
+}
+
+/** Deterministic partner reply (dispatched by the store after a beat). */
+export function receiveReply(state: GameState, connId: string): GameState {
+  const conn = state.connections.find((c) => c.id === connId);
+  if (!conn || !isOpen(conn.state)) return state;
+  const pid = conn.a === state.player.id ? conn.b : conn.a;
+  const partner = state.byId.get(pid);
+  if (!partner) return state;
+  const msgs = state.messages[connId] ?? [];
+  const replyCount = msgs.filter((m) => m.from === pid).length;
+  const { win, int } = sharedFlavour(state, pid);
+  const text = simReply(partner, win, int, connId, replyCount, state.seed);
+  return {
+    ...state,
+    messages: { ...state.messages, [connId]: [...msgs, { from: pid, text, week: state.week }] },
+  };
+}
+
+export function openChat(state: GameState, connId: string | null): GameState {
+  return { ...state, chatOpen: connId };
+}
+
+export function requestGraduate(state: GameState, connId: string | null): GameState {
+  return { ...state, graduatePrompt: connId };
+}
+
+/** Confirmed graduation: atomic (§4), then hand off to the celebration. */
+export function confirmGraduate(state: GameState, connId: string): GameState {
+  const next = graduateNow(state, connId);
+  return { ...next, graduatePrompt: null, celebrate: connId, chatOpen: null };
+}
+
+export function dismissCelebrate(state: GameState): GameState {
+  return { ...state, celebrate: null };
 }
 
 function otherParty(state: GameState, connId: string): string {

@@ -18,7 +18,8 @@ const stateTone: Record<string, 'lamp' | 'verdigris' | 'muted' | 'danger'> = {
 };
 
 export function ConnectionCard({ conn }: { conn: Connection }) {
-  const { state, vote, markMet, close, report, graduate } = useStore();
+  const { state, vote, markMet, close, report, openChat, requestGraduate } = useStore();
+  const msgCount = (state.messages[conn.id] ?? []).length;
   const name = partnerName(state, conn);
   const me = state.player.id;
   const myVote = conn.votes[me];
@@ -58,6 +59,11 @@ export function ConnectionCard({ conn }: { conn: Connection }) {
           </View>
           {!offersMoreTime(conn) && <Muted>Third checkpoint running — keep or close only.</Muted>}
           {myVote && <Muted>Sealed. Resolves at the next results hour.</Muted>}
+          <Button
+            label={msgCount ? `Message · ${msgCount}` : 'Message'}
+            kind="ghost"
+            onPress={() => openChat(conn.id)}
+          />
         </View>
       ) : closed ? (
         <Muted>
@@ -69,11 +75,15 @@ export function ConnectionCard({ conn }: { conn: Connection }) {
         <Muted>You both left the market together. 🎉</Muted>
       ) : (
         <View style={{ gap: space(1) }}>
+          <Button
+            label={msgCount ? `Message · ${msgCount}` : 'Message'}
+            onPress={() => openChat(conn.id)}
+          />
           {!conn.dateAcknowledged && (
             <Button label="We met — confirm the date" kind="ghost" onPress={() => markMet(conn.id)} />
           )}
           <View style={styles.row}>
-            <Button label="Graduate" kind="good" onPress={() => graduate(conn.id)} style={{ flex: 1 }} />
+            <Button label="Graduate" kind="good" onPress={() => requestGraduate(conn.id)} style={{ flex: 1 }} />
             <Button label="Close" kind="ghost" onPress={() => close(conn.id)} style={{ flex: 1 }} />
           </View>
           <Button label="Report a safety concern" kind="danger" onPress={() => report(conn.id)} />
