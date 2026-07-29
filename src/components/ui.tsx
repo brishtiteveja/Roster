@@ -2,7 +2,7 @@ import React from 'react';
 import {
   View, Text, Pressable, StyleSheet, ViewStyle, TextStyle, ScrollView,
 } from 'react-native';
-import { colors, radius, space, type as t } from '../theme';
+import { colors, radius, shadow, space, type as t } from '../theme';
 import { Avatar } from './Avatar';
 
 export function Eyebrow({ children, tone }: { children: React.ReactNode; tone?: 'lamp' | 'verdigris' | 'muted' | 'danger' }) {
@@ -118,9 +118,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.panel,
     borderColor: colors.line,
     borderWidth: 1,
-    borderRadius: radius.md,
+    borderRadius: radius.lg,
     padding: space(2),
     gap: space(1.25),
+    ...shadow.card,
   },
   btn: {
     borderWidth: 1.4,

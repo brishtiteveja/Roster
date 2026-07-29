@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { avatarSvg } from '../data/avatars';
 import { colors } from '../theme';
@@ -20,18 +20,11 @@ export function Avatar({
         { width: size, height: size, borderRadius: size / 2, borderColor: border, borderWidth: width },
       ]}
     >
-      <SvgXml xml={avatarSvg(seed)} width={size} height={size} />
-      {name ? (
-        <View style={styles.tagWrap} pointerEvents="none">
-          <Text style={styles.tag}>{name.slice(0, 2)}</Text>
-        </View>
-      ) : null}
+      <SvgXml xml={avatarSvg(seed)} width={size} height={size} preserveAspectRatio="xMidYMid slice" />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  wrap: { overflow: 'hidden', backgroundColor: colors.ground, alignItems: 'center', justifyContent: 'center' },
-  tagWrap: { position: 'absolute', bottom: 2, right: 2, backgroundColor: 'rgba(12,15,27,0.55)', borderRadius: 6, paddingHorizontal: 3 },
-  tag: { color: colors.bone, fontSize: 8.5, fontWeight: '700', letterSpacing: 0.5 },
+  wrap: { overflow: 'hidden', backgroundColor: colors.panel, alignItems: 'center', justifyContent: 'center' },
 });

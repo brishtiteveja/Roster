@@ -26,7 +26,24 @@ export const font = {
 
 export const space = (n: number) => n * 8;
 
-export const radius = { sm: 8, md: 14, lg: 22, pill: 999 } as const;
+export const radius = { sm: 8, md: 14, lg: 22, xl: 28, pill: 999 } as const;
+
+export const shadow = {
+  card: {
+    shadowColor: '#000',
+    shadowOpacity: 0.35,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 8,
+  },
+  lift: {
+    shadowColor: '#000',
+    shadowOpacity: 0.45,
+    shadowRadius: 28,
+    shadowOffset: { width: 0, height: 16 },
+    elevation: 16,
+  },
+} as const;
 
 export const type = {
   wordmark: { fontSize: 15, letterSpacing: 4, fontWeight: '600' as const },

@@ -59,9 +59,9 @@ src/
     clearing.ts      quota-respecting reciprocal clearing = max matching + fairness hierarchy (§3)
     checkpoint.ts    connection & checkpoint state machine, anti-ghost + graduation (§4)
     params.ts        frozen Season 0 parameters (§1)
-  data/              seeded cohort, simulated declarations/picks/votes, propose–approve persona
+  data/              seeded cohort, simulated declarations/picks/votes, propose–approve persona, generated avatars
   state/             React reducer store + the weekly orchestration loop
-  components/        design-system primitives (the lamp-lit slide palette)
+  components/        design-system primitives + the Tinder-style swipe Deck (the lamp-lit slide palette)
   screens/           Onboarding · Declare · Board · Results/Recoupling · Connections · Observatory · Season end
 ```
 
@@ -81,6 +81,14 @@ src/
   mutual" after (§5.1).
 - **Silence is protected** — not clearing is never a verdict; the closer is never named; the
   protection is scheduling + symmetry, not secrecy (§3.4, §4).
+
+### Look & feel
+The board is a **Tinder-style swipe deck** — full-bleed cards, gradient scrims, name/age/bio, interest
+chips, and swipe-right-to-seal (preserving the sealed-pick mechanic and its "nobody learns they were
+passed over" guarantee). Profile faces are generated **offline** with [DiceBear](https://www.dicebear.com/)
+(MIT) on a per-person gradient — free, no attribution, no network, and no real person's face on a
+synthetic profile. Drop your own images into `assets/` and point `src/data/avatars.ts` at them to swap
+the source in one place.
 
 This is a demo of the *mechanism* and the *experience*. No real people, no network, no cloud path —
 everything runs locally, exactly as the twin does.

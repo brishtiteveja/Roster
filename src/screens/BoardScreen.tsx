@@ -1,100 +1,107 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { colors, space } from '../theme';
+import { View, Text, StyleSheet } from 'react-native';
+import { colors, space, type as t } from '../theme';
 import { WINDOWS } from '../data/cohort';
 import { useStore } from '../state/store';
 import { PARAMS } from '../engine';
-import { affinity } from '../engine/eligibility';
-import { Body, Button, Card, Eyebrow, H1, Muted, Seat, ScreenScroll } from '../components/ui';
+import { Button, Eyebrow, Muted } from '../components/ui';
+import { Deck, DeckPerson } from '../components/Deck';
 import { Avatar } from '../components/Avatar';
 
 export function BoardScreen() {
   const { state, togglePick, submit } = useStore();
   const player = state.player;
   const candidates = state.playerCandidates;
-
-  function sharedNote(id: string): string {
-    const c = state.byId.get(id)!;
-    const win = player.windows.filter((w) => c.windows.includes(w)).map((w) => WINDOWS[w].split(' ')[0]);
-    const ints = player.interests.filter((i) => c.interests.includes(i));
-    const bits: string[] = [];
-    if (win.length) bits.push(win.length + 'd overlap');
-    if (ints.length) bits.push(ints[0]);
-    return bits.join(' · ') || 'a broadening pick';
-  }
-
   const picks = state.playerPicks;
 
+  function overlapText(id: string): string {
+    const c = state.byId.get(id)!;
+    const win = player.windows.filter((w) => c.windows.includes(w)).map((w) => WINDOWS[w].split(' ')[0]);
+    if (win.length) return `both free ${win.slice(0, 2).join(' & ')}`;
+    return 'a broadening pick';
+  }
+  function chips(id: string): string[] {
+    const c = state.byId.get(id)!;
+    const shared = player.interests.filter((i) => c.interests.includes(i));
+    return (shared.length ? shared : c.interests).slice(0, 3);
+  }
+
+  const people: DeckPerson[] = candidates.map((id) => {
+    const c = state.byId.get(id)!;
+    return { id, name: c.name, age: c.age, bio: c.bio, chips: chips(id), overlap: overlapText(id) };
+  });
+
+  function onPick(id: string) {
+    if (!picks.includes(id) && picks.length < PARAMS.PICKS_MAX) togglePick(id);
+  }
+  function onSkip(_id: string) {}
+
+  const done = (
+    <View style={styles.doneCard}>
+      <Eyebrow tone="lamp">That's the board</Eyebrow>
+      <Text style={styles.doneTitle}>{picks.length ? `${picks.length} sealed.` : 'Nothing sealed.'}</Text>
+      <Muted style={{ textAlign: 'center' }}>
+        Seal your picks and they meet real capacity at Monday's clearing — at most one new connection.
+      </Muted>
+    </View>
+  );
+
   return (
-    <ScreenScroll>
-      <View>
+    <View style={styles.wrap}>
+      <View style={styles.header}>
         <Eyebrow tone="lamp">Week {state.week} · your board</Eyebrow>
-        <H1>Six people, with room.</H1>
-        <Muted style={{ marginTop: space(1) }}>
-          Everyone here made room this week. Pick up to three — sealed. At Monday's clearing your picks meet
-          real capacity: at most one new connection. Unpicked and picked-without-room look identical, so no one
-          learns they were passed over.
-        </Muted>
+        <Text style={styles.title}>Six with room</Text>
+        <Muted>Swipe right to seal a pick (up to three), left to pass. Nobody learns they were passed over.</Muted>
       </View>
 
-      <Card>
-        <View style={styles.grid}>
-          {candidates.map((id) => {
-            const c = state.byId.get(id)!;
-            const picked = picks.includes(id);
-            return (
-              <Seat
-                key={id}
-                name={c.name}
-                seed={c.id}
-                picked={picked}
-                subtitle={sharedNote(id)}
-                onPress={() => togglePick(id)}
-              />
-            );
-          })}
-        </View>
-        <View style={styles.counter}>
-          <Muted>
-            {picks.length} / {PARAMS.PICKS_MAX} sealed
-          </Muted>
-          <Muted>affinity = shared windows + shared interests</Muted>
-        </View>
-      </Card>
+      <View style={styles.deck}>
+        <Deck
+          people={people}
+          picks={picks}
+          canPick={picks.length < PARAMS.PICKS_MAX}
+          onPick={onPick}
+          onSkip={onSkip}
+          onEmpty={done}
+        />
+      </View>
 
-      {picks.length > 0 && (
-        <Card lit>
-          <Eyebrow tone="lamp">Sealed picks</Eyebrow>
-          {picks.map((id) => {
-            const c = state.byId.get(id)!;
-            return (
-              <View key={id} style={styles.pickRow}>
-                <Avatar seed={c.id} name={c.name} size={46} ring="lamp" />
-                <View style={{ flex: 1 }}>
-                  <Body>
-                    {c.name} · <Muted>affinity {affinity(player, c)}</Muted>
-                  </Body>
-                  <Muted>{c.bio}</Muted>
-                </View>
+      <View style={styles.footer}>
+        <View style={styles.sealedRow}>
+          <View style={styles.dots}>
+            {Array.from({ length: PARAMS.PICKS_MAX }).map((_, i) => (
+              <View key={i} style={[styles.dot, i < picks.length && styles.dotOn]} />
+            ))}
+          </View>
+          <View style={styles.avatars}>
+            {picks.map((id) => (
+              <View key={id} style={styles.avatarStack}>
+                <Avatar seed={id} name={state.byId.get(id)!.name} size={34} ring="lamp" />
               </View>
-            );
-          })}
-        </Card>
-      )}
-
-      <Button
-        label={picks.length ? `Seal ${picks.length} pick${picks.length > 1 ? 's' : ''} → clearing` : 'Seal an empty week'}
-        onPress={submit}
-      />
-      <Muted style={{ textAlign: 'center' }}>
-        Before clearing: everyone you see has made room to meet someone this week.
-      </Muted>
-    </ScreenScroll>
+            ))}
+          </View>
+          <Muted>{picks.length} / {PARAMS.PICKS_MAX} sealed</Muted>
+        </View>
+        <Button
+          label={picks.length ? `Seal ${picks.length} pick${picks.length > 1 ? 's' : ''} → clearing` : 'Seal an empty week'}
+          onPress={submit}
+        />
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: space(1.5), justifyContent: 'space-between' },
-  counter: { flexDirection: 'row', justifyContent: 'space-between', marginTop: space(1), borderTopWidth: 1, borderTopColor: colors.line, paddingTop: space(1) },
-  pickRow: { flexDirection: 'row', gap: space(1.5), alignItems: 'center' },
+  wrap: { flex: 1, backgroundColor: colors.ground, paddingHorizontal: space(2.5), paddingTop: space(1.5), paddingBottom: space(2) },
+  header: { gap: 4, marginBottom: space(1) },
+  title: { ...t.h1, color: colors.bone },
+  deck: { flex: 1, justifyContent: 'center' },
+  footer: { gap: space(1.5) },
+  sealedRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  dots: { flexDirection: 'row', gap: 6 },
+  dot: { width: 9, height: 9, borderRadius: 5, borderWidth: 1.5, borderColor: colors.muted },
+  dotOn: { backgroundColor: colors.lamp, borderColor: colors.lamp },
+  avatars: { flexDirection: 'row' },
+  avatarStack: { marginLeft: -8 },
+  doneCard: { alignItems: 'center', gap: space(1.25), paddingHorizontal: space(3) },
+  doneTitle: { ...t.h1, color: colors.bone, textAlign: 'center' },
 });

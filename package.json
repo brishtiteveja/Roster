@@ -4,8 +4,11 @@
   "description": "Roster — a weekly-clearing dating market (React Native / Expo). Mechanism Spec v5.2.2.",
   "main": "index.ts",
   "dependencies": {
+    "@dicebear/collection": "^9.4.2",
+    "@dicebear/core": "^9.4.3",
     "@expo/metro-runtime": "^57.0.7",
     "expo": "~57.0.8",
+    "expo-linear-gradient": "^57.0.1",
     "expo-status-bar": "~57.0.1",
     "react": "19.2.3",
     "react-dom": "^19.2.3",

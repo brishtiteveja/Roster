@@ -55,13 +55,15 @@ try {
   await shot('03-declare');
 
   await tap("I'm In");
+  await page.waitForTimeout(600);
   await shot('04-board');
 
-  // Seal three picks via accessible seat buttons, then screenshot the picks card.
-  const seats = page.getByLabel(/^board seat/);
-  const n = await seats.count();
-  console.log('  board seats:', n);
-  for (let i = 0; i < Math.min(3, n); i++) { await seats.nth(i).click(); await page.waitForTimeout(250); }
+  // Seal three picks by tapping the heart on the swipe deck (each advances it).
+  for (let i = 0; i < 3; i++) {
+    const heart = page.getByText('♥', { exact: true }).first();
+    await heart.click();
+    await page.waitForTimeout(500);
+  }
   await shot('04b-board-sealed');
 
   // Seal + clear (match the action button text, not the "SEALED PICKS" heading)

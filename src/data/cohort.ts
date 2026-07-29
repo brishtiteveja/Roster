@@ -1,5 +1,7 @@
 import { Participant } from '../engine';
-import { RNG } from '../engine/rng';
+import { RNG, hashSeed } from '../engine/rng';
+
+const hashAge = (s: string) => hashSeed('age::' + s);
 
 /** The shared weekly availability grid (windows are indices into this). */
 export const WINDOWS = [
@@ -29,6 +31,7 @@ const NAMES = [
 
 export interface Persona extends Participant {
   name: string;
+  age: number;
   /** a one-line inner voice used by the (mocked) spotlight narrator. */
   voice: string;
   /** a short profile line — the thing you'd read on a card. */
@@ -92,6 +95,7 @@ export function buildCohort(seed: string, size = 34): Persona[] {
     people.push({
       id: `sim_${i}`,
       name: NAMES[i % NAMES.length],
+      age: 24 + (hashAge(`sim_${i}`) % 15),
       windows,
       interests,
       is: [gender],
@@ -109,6 +113,7 @@ export function makePlayer(): Persona {
   return {
     id: 'you',
     name: 'You',
+    age: 29,
     windows: [0, 4, 6], // Mon eve, Fri eve, Sat eve
     interests: ['live music', 'film', 'coffee', 'hiking'],
     is: ['a'],
