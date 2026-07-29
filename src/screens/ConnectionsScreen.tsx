@@ -4,7 +4,8 @@ import { space } from '../theme';
 import { useStore } from '../state/store';
 import { playerConnections } from '../state/orchestration';
 import { PARAMS, isOpen } from '../engine';
-import { Body, Card, Eyebrow, H1, Muted, ScreenScroll } from '../components/ui';
+import { Body, Card, Eyebrow, Muted, ScreenScroll } from '../components/ui';
+import { Hero } from '../components/Hero';
 import { ConnectionCard } from '../components/ConnectionCard';
 
 export function ConnectionsScreen() {
@@ -15,15 +16,11 @@ export function ConnectionsScreen() {
 
   return (
     <ScreenScroll>
-      <View>
-        <Eyebrow tone="lamp">Your connections · at most {PARAMS.K_ACTIVE}</Eyebrow>
-        <H1>Nothing trails off.</H1>
-        <Muted style={{ marginTop: space(1) }}>
-          Two connections is the whole capacity, so a pick means something. Either person can close, kindly,
-          with no reason recorded. Miss two check-ins with nothing said and it closes for you — silence gets an
-          ending instead of becoming one.
-        </Muted>
-      </View>
+      <Hero
+        eyebrow={`Your connections · at most ${PARAMS.K_ACTIVE}`}
+        title="Nothing trails off."
+        subtitle="A pick means something. Either person can close, kindly, with no reason recorded. Miss two check-ins in silence and it closes — silence gets an ending instead of becoming one."
+      />
 
       {open.length === 0 && (
         <Card>

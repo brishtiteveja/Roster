@@ -65,6 +65,21 @@ export function Divider() {
   return <View style={styles.divider} />;
 }
 
+/** A big-number stat, used in results / observatory / season-end. */
+export function Stat({ n, label, tone }: { n: number | string; label: string; tone?: 'lamp' | 'verdigris' | 'bone' }) {
+  const color = tone === 'verdigris' ? colors.verdigris : tone === 'bone' ? colors.bone : colors.lamp;
+  return (
+    <View style={styles.stat}>
+      <Text style={[styles.statN, { color }]}>{n}</Text>
+      <Text style={styles.statLabel}>{label}</Text>
+    </View>
+  );
+}
+
+export function StatRow({ children }: { children: React.ReactNode }) {
+  return <View style={styles.statRow}>{children}</View>;
+}
+
 export function Body({ children, style }: { children: React.ReactNode; style?: TextStyle }) {
   return <Text style={[styles.body, style]}>{children}</Text>;
 }
@@ -141,6 +156,10 @@ const styles = StyleSheet.create({
   },
   pillText: { fontSize: 11, letterSpacing: 1, fontWeight: '600' },
   divider: { height: 1, backgroundColor: colors.line, marginVertical: space(0.5) },
+  stat: { alignItems: 'center', flex: 1, gap: 3 },
+  statN: { fontSize: 30, fontWeight: '800', letterSpacing: -0.5 },
+  statLabel: { color: colors.muted, fontSize: 12, textAlign: 'center', lineHeight: 15 },
+  statRow: { flexDirection: 'row', justifyContent: 'space-between', gap: space(1) },
   body: { ...t.body, color: colors.bone },
   muted: { ...t.small, color: colors.muted },
   h1: { ...t.h1, color: colors.bone },

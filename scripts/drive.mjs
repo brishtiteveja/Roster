@@ -72,6 +72,27 @@ try {
   await page.waitForTimeout(1100);
   await shot('05-results');
 
+  // Play a few more weeks so the observatory has real data.
+  async function sealSome() {
+    for (let i = 0; i < 2; i++) {
+      const heart = page.getByText('♥', { exact: true }).first();
+      if (await heart.count()) { await heart.click(); await page.waitForTimeout(400); }
+    }
+    const seal = page.getByText(/Seal \d+ pick|Seal an empty/).first();
+    await seal.click();
+    await page.waitForTimeout(900);
+  }
+  for (let w = 0; w < 3; w++) {
+    const adv = page.getByText(/Advance to next week/).first();
+    if (!(await adv.count())) break;
+    await adv.click();
+    await page.waitForTimeout(700);
+    // Now on DECLARE
+    const inBtn = page.getByText("I'm In", { exact: false }).first();
+    if (await inBtn.count()) { await inBtn.click(); await page.waitForTimeout(600); await sealSome(); }
+  }
+  await shot('05b-results-later');
+
   // Observatory tab
   await tap('Observatory');
   await shot('06-observatory');

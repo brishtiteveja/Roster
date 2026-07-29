@@ -4,7 +4,7 @@ import { colors, space } from '../theme';
 import { useStore } from '../state/store';
 import { openCheckpointsForPlayer, openPlayerConnections } from '../state/orchestration';
 import { PARAMS } from '../engine';
-import { Body, Button, Card, Eyebrow, H1, Muted, Seat, ScreenScroll } from '../components/ui';
+import { Body, Button, Card, Eyebrow, H1, Muted, Seat, Stat, StatRow, ScreenScroll } from '../components/ui';
 import { ConnectionCard } from '../components/ConnectionCard';
 
 export function ResultsScreen() {
@@ -47,11 +47,11 @@ export function ResultsScreen() {
       {clearing && (
         <Card>
           <Eyebrow>Across the cohort this week</Eyebrow>
-          <View style={styles.stats}>
+          <StatRow>
             <Stat n={clearing.introductions.length} label="introductions cleared" />
             <Stat n={clearing.unclearedMutual.length} label="mutual, no room yet" />
             <Stat n={state.metrics.at(-1)?.declarers ?? 0} label="declared in" />
-          </View>
+          </StatRow>
           <Muted>
             Mutual picks without capacity get no notice and no state — they simply stay eligible. Not clearing
             is never a verdict.
@@ -88,17 +88,6 @@ export function ResultsScreen() {
   );
 }
 
-function Stat({ n, label }: { n: number; label: string }) {
-  return (
-    <View style={styles.stat}>
-      <Body style={{ color: colors.lamp, fontSize: 26, fontWeight: '700' }}>{n}</Body>
-      <Muted style={{ textAlign: 'center' }}>{label}</Muted>
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
   introRow: { flexDirection: 'row', gap: space(2), flexWrap: 'wrap' },
-  stats: { flexDirection: 'row', justifyContent: 'space-between', gap: space(1) },
-  stat: { alignItems: 'center', flex: 1, gap: 2 },
 });
