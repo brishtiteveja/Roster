@@ -1,5 +1,5 @@
 import { createAvatar } from '@dicebear/core';
-import { avataaars } from '@dicebear/collection';
+import { lorelei } from '@dicebear/collection';
 import { hashSeed } from '../engine/rng';
 
 // Profile imagery — generated offline with DiceBear (MIT), so the app ships its
@@ -18,17 +18,15 @@ const GRADIENTS: Array<[string, string]> = [
 export function avatarSvg(seed: string): string {
   const h = hashSeed('roster-face::' + seed);
   const g = GRADIENTS[h % GRADIENTS.length];
-  return createAvatar(avataaars, {
+  return createAvatar(lorelei, {
     seed,
     size: 256,
     radius: 0,
     backgroundColor: g,
     backgroundType: ['gradientLinear'],
     backgroundRotation: [(h >> 3) % 360],
-    // Bias toward warm, approachable expressions — a dating-app crowd.
-    mouth: ['default', 'smile', 'twinkle'],
-    eyes: ['default', 'happy', 'wink', 'squint'],
-    eyebrows: ['default', 'defaultNatural', 'raisedExcitedNatural', 'upDown'],
+    // Editorial line-art style, warm expressions only — a dating-app crowd.
+    mouth: Array.from({ length: 18 }, (_, i) => 'happy' + String(i + 1).padStart(2, '0')) as any,
   }).toString();
 }
 

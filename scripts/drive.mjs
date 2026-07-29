@@ -69,7 +69,12 @@ try {
   // Seal + clear (match the action button text, not the "SEALED PICKS" heading)
   const sealBtn = page.getByText(/Seal \d+ pick|Seal an empty/).first();
   await sealBtn.click();
-  await page.waitForTimeout(1100);
+  await page.waitForTimeout(1400);
+  await shot('05-match-overlay');
+
+  // Dismiss the match overlay if it appeared.
+  const keepLooking = page.getByText('Keep looking', { exact: true });
+  if (await keepLooking.count()) { await keepLooking.first().click(); await page.waitForTimeout(400); }
   await shot('05-results');
 
   // Play a few more weeks so the observatory has real data.
@@ -80,7 +85,9 @@ try {
     }
     const seal = page.getByText(/Seal \d+ pick|Seal an empty/).first();
     await seal.click();
-    await page.waitForTimeout(900);
+    await page.waitForTimeout(1000);
+    const kl = page.getByText('Keep looking', { exact: true });
+    if (await kl.count()) { await kl.first().click(); await page.waitForTimeout(400); }
   }
   for (let w = 0; w < 3; w++) {
     const adv = page.getByText(/Advance to next week/).first();
@@ -100,6 +107,10 @@ try {
   // Connections tab
   await tap('Connections');
   await shot('07-connections');
+
+  // Profile tab
+  await tap('Profile');
+  await shot('08-profile');
 
   console.log('\nconsole errors:', errors.length);
   errors.slice(0, 12).forEach((e) => console.log('  !', e));

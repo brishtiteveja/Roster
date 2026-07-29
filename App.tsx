@@ -11,8 +11,11 @@ import { ResultsScreen } from './src/screens/ResultsScreen';
 import { ConnectionsScreen } from './src/screens/ConnectionsScreen';
 import { ObservatoryScreen } from './src/screens/ObservatoryScreen';
 import { SeasonEndScreen } from './src/screens/SeasonEndScreen';
+import { ProfileScreen } from './src/screens/ProfileScreen';
+import { MatchOverlay } from './src/components/MatchOverlay';
+import { DeckIcon, HeartIcon, PulseIcon, PersonIcon } from './src/components/icons';
 
-type Tab = 'flow' | 'connections' | 'observatory';
+type Tab = 'flow' | 'connections' | 'observatory' | 'profile';
 
 function phaseTag(phase: string, week: number): string {
   switch (phase) {
@@ -28,6 +31,7 @@ function phaseTag(phase: string, week: number): string {
 function Shell() {
   const { state } = useStore();
   const [tab, setTab] = useState<Tab>('flow');
+  const [matchSeenWeek, setMatchSeenWeek] = useState(0);
   const onboarding = state.phase === 'ONBOARDING';
   const activeTab = onboarding ? 'flow' : tab;
 
@@ -45,6 +49,10 @@ function Shell() {
   const openCount = openPlayerConnections(state).length;
   const pending = openCheckpointsForPlayer(state).length;
 
+  const matchPartner = state.playerIntrosThisWeek[0];
+  const showMatch =
+    state.phase === 'RESULTS' && !!matchPartner && matchSeenWeek !== state.week;
+
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar style="light" />
@@ -60,41 +68,63 @@ function Shell() {
         {activeTab === 'flow' && flowScreen()}
         {activeTab === 'connections' && <ConnectionsScreen />}
         {activeTab === 'observatory' && <ObservatoryScreen />}
+        {activeTab === 'profile' && <ProfileScreen />}
       </View>
 
       {!onboarding && (
         <View style={styles.tabbar}>
-          <TabButton label="This week" active={activeTab === 'flow'} onPress={() => setTab('flow')} />
+          <TabButton label="This week" icon={DeckIcon} active={activeTab === 'flow'} onPress={() => setTab('flow')} />
           <TabButton
             label="Connections"
+            icon={HeartIcon}
             active={activeTab === 'connections'}
             badge={pending || undefined}
             sub={`${openCount}/2`}
             onPress={() => setTab('connections')}
           />
-          <TabButton label="Observatory" active={activeTab === 'observatory'} onPress={() => setTab('observatory')} />
+          <TabButton label="Observatory" icon={PulseIcon} active={activeTab === 'observatory'} onPress={() => setTab('observatory')} />
+          <TabButton label="Profile" icon={PersonIcon} active={activeTab === 'profile'} onPress={() => setTab('profile')} />
         </View>
+      )}
+
+      {showMatch && (
+        <MatchOverlay
+          partnerName={state.byId.get(matchPartner)?.name ?? matchPartner}
+          partnerSeed={matchPartner}
+          week={state.week}
+          onHello={() => { setMatchSeenWeek(state.week); setTab('connections'); }}
+          onDismiss={() => setMatchSeenWeek(state.week)}
+        />
       )}
     </SafeAreaView>
   );
 }
 
 function TabButton({
-  label, active, onPress, badge, sub,
+  label, icon: Icon, active, onPress, badge, sub,
 }: {
-  label: string; active: boolean; onPress: () => void; badge?: number; sub?: string;
+  label: string;
+  icon: (p: { color: string; size?: number }) => React.JSX.Element;
+  active: boolean;
+  onPress: () => void;
+  badge?: number;
+  sub?: string;
 }) {
+  const color = active ? colors.lamp : colors.muted;
   return (
     <Pressable onPress={onPress} style={styles.tab}>
-      <View style={{ alignItems: 'center' }}>
-        <Text style={[styles.tabLabel, active && { color: colors.lamp }]}>{label}</Text>
+      <View style={{ alignItems: 'center', gap: 3 }}>
+        <View>
+          <Icon color={color} size={23} />
+          {badge ? (
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>{badge}</Text>
+            </View>
+          ) : null}
+        </View>
+        <Text style={[styles.tabLabel, { color }]}>{label}</Text>
         {sub ? <Text style={styles.tabSub}>{sub}</Text> : null}
       </View>
-      {badge ? (
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>{badge}</Text>
-        </View>
-      ) : null}
       {active && <View style={styles.tabUnderline} />}
     </Pressable>
   );
@@ -125,10 +155,14 @@ const styles = StyleSheet.create({
     borderTopWidth: 1, borderTopColor: colors.line,
     paddingBottom: Platform.OS === 'ios' ? space(2) : space(1),
   },
-  tab: { flex: 1, alignItems: 'center', paddingVertical: space(1.5), flexDirection: 'row', justifyContent: 'center', gap: 6 },
-  tabLabel: { color: colors.muted, fontSize: 13, fontWeight: '600', letterSpacing: 0.3 },
-  tabSub: { color: colors.muted, fontSize: 10, textAlign: 'center', opacity: 0.7 },
-  tabUnderline: { position: 'absolute', top: 0, height: 2, width: 40, backgroundColor: colors.lamp, borderRadius: 2 },
-  badge: { backgroundColor: colors.lamp, borderRadius: 9, minWidth: 18, height: 18, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 4 },
-  badgeText: { color: colors.night, fontSize: 11, fontWeight: '700' },
+  tab: { flex: 1, alignItems: 'center', paddingVertical: space(1.25), justifyContent: 'center' },
+  tabLabel: { fontSize: 11, fontWeight: '600', letterSpacing: 0.3 },
+  tabSub: { color: colors.muted, fontSize: 9.5, textAlign: 'center', opacity: 0.7 },
+  tabUnderline: { position: 'absolute', top: 0, height: 2, width: 36, backgroundColor: colors.lamp, borderRadius: 2 },
+  badge: {
+    position: 'absolute', top: -5, right: -10,
+    backgroundColor: colors.lamp, borderRadius: 8, minWidth: 16, height: 16,
+    alignItems: 'center', justifyContent: 'center', paddingHorizontal: 3,
+  },
+  badgeText: { color: colors.night, fontSize: 10, fontWeight: '800' },
 });

@@ -29,9 +29,9 @@ export function Deck({
   onSkip: (id: string) => void;
   onEmpty?: React.ReactNode;
 }) {
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
   const cardW = Math.min(width - space(5), 380);
-  const cardH = Math.min(cardW * 1.34, 520);
+  const cardH = Math.min(cardW * 1.34, height * 0.5, 520);
 
   const [index, setIndex] = useState(0);
   const position = useRef(new Animated.ValueXY()).current;
@@ -106,7 +106,7 @@ export function Deck({
             { width: cardW, height: cardH, transform: [{ translateX: position.x }, { translateY: position.y }, { rotate }] },
           ]}
         >
-          <CardFace person={current} w={cardW} h={cardH} picked={picked} />
+          <CardFace person={current} w={cardW} h={cardH} picked={picked} progress={{ i: index, n: people.length }} />
           <Animated.View style={[styles.stamp, styles.stampLike, { opacity: likeOpacity }]}>
             <Text style={[styles.stampText, { color: colors.verdigris, borderColor: colors.verdigris }]}>PICK</Text>
           </Animated.View>
@@ -132,15 +132,27 @@ export function Deck({
   );
 }
 
-function CardFace({ person, w, h, picked, dimmed }: { person: DeckPerson; w: number; h: number; picked?: boolean; dimmed?: boolean }) {
+function CardFace({
+  person, w, h, picked, dimmed, progress,
+}: {
+  person: DeckPerson; w: number; h: number; picked?: boolean; dimmed?: boolean;
+  progress?: { i: number; n: number };
+}) {
   return (
     <View style={[styles.card, { width: w, height: h }, dimmed && { opacity: 0.6 }]}>
       <SvgXml xml={avatarSvg(person.id)} width={w} height={h} preserveAspectRatio="xMidYMid slice" />
       <LinearGradient
-        colors={['transparent', 'rgba(12,15,27,0.15)', 'rgba(12,15,27,0.92)']}
-        locations={[0, 0.5, 1]}
+        colors={['rgba(12,15,27,0.35)', 'transparent', 'rgba(12,15,27,0.15)', 'rgba(12,15,27,0.92)']}
+        locations={[0, 0.18, 0.5, 1]}
         style={StyleSheet.absoluteFill as any}
       />
+      {progress && (
+        <View style={styles.segments}>
+          {Array.from({ length: progress.n }).map((_, k) => (
+            <View key={k} style={[styles.segment, k === progress.i && styles.segmentOn, k < progress.i && styles.segmentDone]} />
+          ))}
+        </View>
+      )}
       {picked && (
         <View style={styles.sealedBadge}>
           <Text style={styles.sealedText}>✓ SEALED</Text>
@@ -196,7 +208,11 @@ const styles = StyleSheet.create({
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 4 },
   chip: { borderWidth: 1, borderColor: 'rgba(236,231,221,0.4)', borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 3, backgroundColor: 'rgba(12,15,27,0.35)' },
   chipText: { color: colors.bone, fontSize: 11.5, fontWeight: '600', letterSpacing: 0.3 },
-  sealedBadge: { position: 'absolute', top: space(2), right: space(2), backgroundColor: colors.lamp, borderRadius: radius.pill, paddingHorizontal: 12, paddingVertical: 5 },
+  segments: { position: 'absolute', top: 10, left: 12, right: 12, flexDirection: 'row', gap: 5 },
+  segment: { flex: 1, height: 3.5, borderRadius: 2, backgroundColor: 'rgba(236,231,221,0.28)' },
+  segmentOn: { backgroundColor: colors.bone },
+  segmentDone: { backgroundColor: 'rgba(233,180,76,0.85)' },
+  sealedBadge: { position: 'absolute', top: space(3), right: space(2), backgroundColor: colors.lamp, borderRadius: radius.pill, paddingHorizontal: 12, paddingVertical: 5 },
   sealedText: { color: colors.night, fontSize: 12, fontWeight: '800', letterSpacing: 1 },
   stamp: { position: 'absolute', top: 28, padding: 6 },
   stampLike: { left: 22, transform: [{ rotate: '-16deg' }] },
