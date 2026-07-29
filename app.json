@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "name": "Roster",
+    "slug": "roster",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#0C0F1B",
+    "splash": {
+      "backgroundColor": "#0C0F1B",
+      "resizeMode": "contain",
+      "image": "./assets/splash-icon.png"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "backgroundColor": "#0C0F1B"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0C0F1B",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    }
+  }
+}
