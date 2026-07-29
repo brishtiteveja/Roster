@@ -31,9 +31,26 @@ export interface Persona extends Participant {
   name: string;
   /** a one-line inner voice used by the (mocked) spotlight narrator. */
   voice: string;
+  /** a short profile line — the thing you'd read on a card. */
+  bio: string;
   /** simple attractiveness/selectivity weight driving simulated picks (0..1). */
   appeal: number;
 }
+
+const BIOS = [
+  'Plays cello badly, cooks confidently. Will lose to you at chess.',
+  'Trail runner turning into a potter. Ask me about kilns.',
+  'Film-score obsessive. I make playlists for the weather.',
+  'Rock gym regular, terrible at rest days. Coffee first.',
+  'Reads poetry on the bus. Writes worse poetry at home.',
+  'Sourdough and long walks by the water. Low-key competitive.',
+  'Jazz shows on weeknights, gardening on weekends.',
+  'Photographs strangers’ dogs (with permission). Surfs when brave.',
+  'Board-game host, soup evangelist. I remember your order.',
+  'Bikes everywhere, theatre nerd, terrible sense of direction.',
+  'Ceramics, ferns, and one very opinionated cat.',
+  'Runs to think, cooks to unwind. Two-plans-deep person.',
+];
 
 const VOICES = [
   'six people, one opening — I want it to matter',
@@ -80,6 +97,7 @@ export function buildCohort(seed: string, size = 34): Persona[] {
       is: [gender],
       seeks,
       voice: VOICES[i % VOICES.length],
+      bio: BIOS[i % BIOS.length],
       appeal: 0.35 + rng.next() * 0.6,
     });
   }
@@ -96,6 +114,7 @@ export function makePlayer(): Persona {
     is: ['a'],
     seeks: ['b'],
     voice: 'my one opening — spending it where there is room',
+    bio: 'Live music, film, long coffees, and getting outdoors. Here on purpose.',
     appeal: 0.6,
   };
 }

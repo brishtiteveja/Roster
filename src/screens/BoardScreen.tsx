@@ -6,6 +6,7 @@ import { useStore } from '../state/store';
 import { PARAMS } from '../engine';
 import { affinity } from '../engine/eligibility';
 import { Body, Button, Card, Eyebrow, H1, Muted, Seat, ScreenScroll } from '../components/ui';
+import { Avatar } from '../components/Avatar';
 
 export function BoardScreen() {
   const { state, togglePick, submit } = useStore();
@@ -45,6 +46,7 @@ export function BoardScreen() {
               <Seat
                 key={id}
                 name={c.name}
+                seed={c.id}
                 picked={picked}
                 subtitle={sharedNote(id)}
                 onPress={() => togglePick(id)}
@@ -66,9 +68,15 @@ export function BoardScreen() {
           {picks.map((id) => {
             const c = state.byId.get(id)!;
             return (
-              <Body key={id}>
-                {c.name} · <Muted>a({affinity(player, c)})</Muted> — “{c.voice}”
-              </Body>
+              <View key={id} style={styles.pickRow}>
+                <Avatar seed={c.id} name={c.name} size={46} ring="lamp" />
+                <View style={{ flex: 1 }}>
+                  <Body>
+                    {c.name} · <Muted>affinity {affinity(player, c)}</Muted>
+                  </Body>
+                  <Muted>{c.bio}</Muted>
+                </View>
+              </View>
             );
           })}
         </Card>
@@ -88,4 +96,5 @@ export function BoardScreen() {
 const styles = StyleSheet.create({
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: space(1.5), justifyContent: 'space-between' },
   counter: { flexDirection: 'row', justifyContent: 'space-between', marginTop: space(1), borderTopWidth: 1, borderTopColor: colors.line, paddingTop: space(1) },
+  pickRow: { flexDirection: 'row', gap: space(1.5), alignItems: 'center' },
 });

@@ -4,6 +4,7 @@ import { colors, space, radius } from '../theme';
 import { PROPOSED, EvidenceSource } from '../data/persona';
 import { useStore } from '../state/store';
 import { Body, Button, Card, Eyebrow, H1, Muted, ScreenScroll } from '../components/ui';
+import { Avatar } from '../components/Avatar';
 
 const sourceLabel: Record<EvidenceSource, string> = {
   photo: 'FROM YOUR PHOTO',
@@ -22,8 +23,11 @@ export function OnboardingScreen() {
 
   return (
     <ScreenScroll>
-      <View>
+      <View style={styles.hero}>
+        <Avatar seed="you" name="You" size={64} ring="lamp" />
         <Eyebrow tone="lamp">The persona graph · receipts, chosen by you</Eyebrow>
+      </View>
+      <View>
         <H1>The model proposes. You decide.</H1>
         <Muted style={{ marginTop: space(1) }}>
           A local model read a photo and a listening export on this box — nothing left it. It drafted
@@ -87,6 +91,7 @@ export function OnboardingScreen() {
 }
 
 const styles = StyleSheet.create({
+  hero: { flexDirection: 'row', alignItems: 'center', gap: space(1.5) },
   row: { flexDirection: 'row', gap: space(1.25), marginTop: space(0.5) },
   deleted: { color: colors.muted, fontSize: 14, textDecorationLine: 'line-through' },
   undo: { color: colors.lamp, fontSize: 13, marginTop: 6, letterSpacing: 1 },

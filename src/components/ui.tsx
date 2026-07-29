@@ -3,11 +3,12 @@ import {
   View, Text, Pressable, StyleSheet, ViewStyle, TextStyle, ScrollView,
 } from 'react-native';
 import { colors, radius, space, type as t } from '../theme';
+import { Avatar } from './Avatar';
 
 export function Eyebrow({ children, tone }: { children: React.ReactNode; tone?: 'lamp' | 'verdigris' | 'muted' | 'danger' }) {
   const color =
     tone === 'lamp' ? colors.lamp : tone === 'verdigris' ? colors.verdigris : tone === 'danger' ? colors.danger : colors.muted;
-  return <Text style={[styles.eyebrow, { color }]}>{String(children).toUpperCase()}</Text>;
+  return <Text style={[styles.eyebrow, { color, textTransform: 'uppercase' }]}>{children}</Text>;
 }
 
 export function Card({ children, style, lit, good }: { children: React.ReactNode; style?: ViewStyle; lit?: boolean; good?: boolean }) {
@@ -80,27 +81,20 @@ export function H3({ children }: { children: React.ReactNode }) {
   return <Text style={styles.h3}>{children}</Text>;
 }
 
-/** A person "seat" node echoing the slide's board-of-six glyph. */
+/** A person "seat" node: a generative portrait echoing the board-of-six glyph. */
 export function Seat({
-  name, picked, cleared, onPress, size = 58, subtitle,
+  name, seed, picked, cleared, onPress, size = 58, subtitle,
 }: {
-  name: string; picked?: boolean; cleared?: boolean; onPress?: () => void; size?: number; subtitle?: string;
+  name: string; seed?: string; picked?: boolean; cleared?: boolean; onPress?: () => void; size?: number; subtitle?: string;
 }) {
-  const border = cleared ? colors.lamp : picked ? colors.bone : colors.muted;
-  const initials = name.slice(0, 2);
+  const ring = cleared ? 'lamp' : picked ? 'bone' : 'muted';
   return (
-    <Pressable onPress={onPress} style={styles.seatWrap}>
-      <View
-        style={[
-          styles.seat,
-          { width: size, height: size, borderRadius: size / 2, borderColor: border, borderWidth: cleared ? 2.6 : picked ? 2.2 : 1.4 },
-          cleared && { backgroundColor: colors.lampSoft },
-        ]}
-      >
-        <Text style={[styles.seatInitials, { color: cleared ? colors.lamp : colors.bone }]}>{initials}</Text>
-        {picked && !cleared && <View style={styles.seal} />}
+    <Pressable onPress={onPress} style={styles.seatWrap} accessibilityRole="button" accessibilityLabel={`board seat ${name}`}>
+      <View>
+        <Avatar seed={seed ?? name} name={name} size={size} ring={ring} />
+        {picked && !cleared ? <View style={styles.seal} /> : null}
       </View>
-      <Text style={styles.seatName} numberOfLines={1}>{name}</Text>
+      <Text style={[styles.seatName, cleared && { color: colors.lamp }]} numberOfLines={1}>{name}</Text>
       {subtitle ? <Text style={styles.seatSub} numberOfLines={1}>{subtitle}</Text> : null}
     </Pressable>
   );
@@ -155,7 +149,8 @@ const styles = StyleSheet.create({
   seat: { alignItems: 'center', justifyContent: 'center', backgroundColor: colors.ground },
   seatInitials: { fontSize: 18, fontWeight: '600', letterSpacing: 1 },
   seal: {
-    position: 'absolute', bottom: 6, width: 9, height: 9, borderRadius: 5, backgroundColor: colors.bone,
+    position: 'absolute', bottom: 3, left: '50%', marginLeft: -5, width: 10, height: 10, borderRadius: 5,
+    backgroundColor: colors.bone, borderWidth: 1.5, borderColor: colors.ground,
   },
   seatName: { color: colors.bone, fontSize: 13, fontWeight: '600' },
   seatSub: { color: colors.muted, fontSize: 10.5, letterSpacing: 0.5 },

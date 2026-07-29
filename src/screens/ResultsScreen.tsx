@@ -27,7 +27,7 @@ export function ResultsScreen() {
           <Eyebrow tone="lamp">Introduced — mutual, cleared against real capacity</Eyebrow>
           <View style={styles.introRow}>
             {intros.map((id) => (
-              <Seat key={id} name={state.byId.get(id)!.name} cleared subtitle="new" />
+              <Seat key={id} name={state.byId.get(id)!.name} seed={id} cleared subtitle="new" />
             ))}
           </View>
           <Body>

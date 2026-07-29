@@ -6,6 +6,7 @@ import { offersMoreTime } from '../engine/checkpoint';
 import { useStore } from '../state/store';
 import { partnerName, partnerId } from '../state/orchestration';
 import { Body, Button, Card, Eyebrow, Muted, Pill } from './ui';
+import { Avatar } from './Avatar';
 
 const stateTone: Record<string, 'lamp' | 'verdigris' | 'muted' | 'danger'> = {
   INTRODUCED: 'lamp',
@@ -25,15 +26,20 @@ export function ConnectionCard({ conn }: { conn: Connection }) {
   const closed = conn.state === 'CLOSED' || conn.state === 'SAFETY_CLOSED';
   const graduated = conn.state === 'GRADUATED';
 
+  const pid = partnerId(state, conn);
   return (
     <Card lit={open} good={graduated} style={closed ? { opacity: 0.6 } : undefined}>
       <View style={styles.head}>
         <Eyebrow tone={stateTone[conn.state]}>{conn.state.replace('_', ' ')}</Eyebrow>
         <Muted>wk {conn.weekIntroduced}</Muted>
       </View>
-      <Body>
-        {name} · <Muted>“{state.byId.get(partnerId(state, conn))?.voice}”</Muted>
-      </Body>
+      <View style={styles.person}>
+        <Avatar seed={pid} name={name} size={48} ring={graduated ? 'verdigris' : open ? 'lamp' : 'muted'} />
+        <View style={{ flex: 1 }}>
+          <Body>{name}</Body>
+          <Muted>{state.byId.get(pid)?.bio}</Muted>
+        </View>
+      </View>
 
       {conn.dateAcknowledged && !closed && !graduated && <Pill tone="verdigris">date confirmed · faster checkpoint</Pill>}
 
@@ -79,5 +85,6 @@ export function ConnectionCard({ conn }: { conn: Connection }) {
 
 const styles = StyleSheet.create({
   head: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  person: { flexDirection: 'row', gap: space(1.5), alignItems: 'center' },
   row: { flexDirection: 'row', gap: space(1) },
 });
