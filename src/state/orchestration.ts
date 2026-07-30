@@ -284,10 +284,10 @@ export function runClearing(state: GameState): GameState {
   next.log = [
     ...state.log,
     playerIntros.length > 0
-      ? `Week ${state.week} cleared: you were introduced to ${playerIntros
+      ? `Week ${state.week}, Monday at six: ${playerIntros
           .map((id) => state.byId.get(id)?.name)
-          .join(' & ')}.`
-      : `Week ${state.week} cleared: no new introduction for you. A quiet week is never a verdict.`,
+          .join(' & ')} said you back.`
+      : `Week ${state.week}, Monday at six: a quiet one — never a verdict.`,
   ];
   return next;
 }
@@ -349,7 +349,7 @@ export function graduateNow(state: GameState, connId: string): GameState {
   });
   const next = { ...state, connections };
   next.activeCount = recomputeActive(next);
-  next.log = [...state.log, `You and ${name(state, otherParty(state, connId))} graduated — you both leave the market. 🎉`];
+  next.log = [...state.log, `You and ${name(state, otherParty(state, connId))} went exclusive — off the market, together. 🎉`];
   return next;
 }
 
@@ -461,7 +461,7 @@ export function advanceWeek(state: GameState): GameState {
     } else if (involvesPlayer) {
       pushSystem(
         c.id,
-        `Checkpoint resolved — still on. Next one in ${res.nextIntervalDays ?? 7} days. Votes are never revealed.`,
+        `Check-in passed — still on. 💛 Next one in ${res.nextIntervalDays ?? 7} days. No one's answer is ever shown.`,
         state.week
       );
     }
@@ -482,7 +482,7 @@ export function advanceWeek(state: GameState): GameState {
     if (age >= 1) {
       pushSystem(
         c.id,
-        'Checkpoint open — you both answer privately within 48h (one reminder at 24h). Keep · More time · Close. A living conversation can’t be closed by paperwork.',
+        'The weekly “still into it?” is open — you both answer privately within 48h (one nudge at 24h). Flirting here counts: a conversation this alive can’t be ended by a form.',
         nextWeek
       );
       return openCheckpoint(c);

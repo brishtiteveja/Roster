@@ -54,8 +54,8 @@ export function GraduationOverlay() {
               <View style={{ marginTop: 16 }}><SparkIcon color={colors.lamp} size={14} /></View>
               <View style={{ transform: [{ rotate: '18deg' }] }}><SparkIcon color={colors.verdigris} size={17} /></View>
             </View>
-            <Text style={styles.kicker}>THE CELEBRATED EXIT</Text>
-            <Text style={styles.headline}>Graduated.</Text>
+            <Text style={styles.kicker}>THE ONLY WAY TO WIN</Text>
+            <Text style={styles.headline}>Off the market.</Text>
             <View style={styles.portraits}>
               <View style={{ transform: [{ rotate: '-6deg' }, { translateX: 14 }] }}>
                 <Avatar seed="you" name="You" size={124} ring="verdigris" />
@@ -64,20 +64,20 @@ export function GraduationOverlay() {
                 <Avatar seed={pid} name={name} size={124} ring="verdigris" />
               </View>
             </View>
-            <Text style={styles.names}>You & {name} are leaving together.</Text>
+            <Text style={styles.names}>You & {name}, gone together.</Text>
             <Text style={styles.sub}>
-              They profit when you stay. We celebrate when you leave. Your other connections close with the
-              same kind notice as any other — no one is told why.
+              They profit when you stay. We celebrate when you leave — preferably holding hands. Anyone else
+              you were seeing gets the same kind notice as ever; no one is told they lost to a love story.
             </Text>
             <View style={styles.actions}>
               <Button label="Take a bow" kind="good" onPress={dismissCelebrate} style={{ alignSelf: 'stretch' }} />
-              <Muted style={{ textAlign: 'center' }}>Celebration is yours to share — or not.</Muted>
+              <Muted style={{ textAlign: 'center' }}>Tell everyone. Or tell no one. Yours either way.</Muted>
             </View>
           </>
         ) : (
           <>
-            <Text style={styles.kicker}>GRADUATION · READ BEFORE YOU LEAP</Text>
-            <Text style={styles.headline}>Leave together?</Text>
+            <Text style={styles.kicker}>GOING EXCLUSIVE · READ BEFORE YOU LEAP</Text>
+            <Text style={styles.headline}>Just the two of you?</Text>
             <View style={styles.portraits}>
               <View style={{ transform: [{ rotate: '-6deg' }, { translateX: 14 }] }}>
                 <Avatar seed="you" name="You" size={104} ring="verdigris" />
@@ -87,19 +87,19 @@ export function GraduationOverlay() {
               </View>
             </View>
             <Text style={styles.sub}>
-              Graduating with {name} exits the market — for both of you. Any other active connection closes
-              through the normal neutral notice. This is the outcome the whole system is built around, and
-              it only happens when you both confirm.
+              Going exclusive with {name} takes you both off the market — boards, picks, all of it. Anyone
+              else you're seeing gets the usual kind notice, nothing more. This is the ending the whole
+              system is built to want, and it only happens when you both say so.
             </Text>
             <View style={styles.actions}>
               <Button
-                label={`We're leaving together`}
+                label="Take me off the market"
                 kind="good"
                 onPress={() => confirmGraduate(connId)}
                 style={{ alignSelf: 'stretch' }}
               />
               <Pressable onPress={() => requestGraduate(null)} hitSlop={10}>
-                <Text style={styles.dismiss}>Not yet</Text>
+                <Text style={styles.dismiss}>Not yet — still savoring this</Text>
               </Pressable>
             </View>
           </>

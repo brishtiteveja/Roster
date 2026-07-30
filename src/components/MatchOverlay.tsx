@@ -56,8 +56,8 @@ export function MatchOverlay({
           <View style={{ transform: [{ rotate: '20deg' }], marginTop: 4 }}><SparkIcon color={colors.lamp} size={16} /></View>
         </View>
 
-        <Text style={styles.kicker}>MONDAY 18:00 · WEEK {week} · RECOUPLING</Text>
-        <Text style={styles.headline}>It's mutual.</Text>
+        <Text style={styles.kicker}>MONDAY 18:00 · WEEK {week} · THE REVEAL</Text>
+        <Text style={styles.headline}>The feeling's mutual.</Text>
 
         <View style={styles.portraits}>
           <View style={[styles.portrait, { transform: [{ rotate: '-6deg' }, { translateX: 14 }] }]}>
@@ -70,13 +70,14 @@ export function MatchOverlay({
 
         <Text style={styles.names}>You & {partnerName}</Text>
         <Text style={styles.sub}>
-          You both reserved room for this. One opening, spent on each other — that's the whole point.
+          Two sealed picks, each with the other's name on it. You spent your one opening on each other
+          before you'd even said hello.
         </Text>
 
         <View style={styles.actions}>
-          <Button label={`Say hello to ${partnerName}`} onPress={onHello} style={{ alignSelf: 'stretch' }} />
+          <Button label="Make the first move" onPress={onHello} style={{ alignSelf: 'stretch' }} />
           <Pressable onPress={onDismiss} hitSlop={10}>
-            <Text style={styles.dismiss}>Keep looking</Text>
+            <Text style={styles.dismiss}>Play it cool</Text>
           </Pressable>
         </View>
       </Animated.View>

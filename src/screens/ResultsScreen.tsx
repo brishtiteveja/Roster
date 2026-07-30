@@ -18,28 +18,27 @@ export function ResultsScreen() {
   return (
     <ScreenScroll>
       <View>
-        <Eyebrow tone="lamp">Week {state.week} · Monday, six · recoupling</Eyebrow>
-        <H1>{intros.length ? 'The clearing.' : 'A quiet week.'}</H1>
+        <Eyebrow tone="lamp">Week {state.week} · Monday, six · the reveal</Eyebrow>
+        <H1>{intros.length ? 'Someone said you back.' : 'A quiet week.'}</H1>
       </View>
 
       {intros.length > 0 ? (
         <Card lit>
-          <Eyebrow tone="lamp">Introduced — mutual, cleared against real capacity</Eyebrow>
+          <Eyebrow tone="lamp">Mutual — you both spent your opening here</Eyebrow>
           <View style={styles.introRow}>
             {intros.map((id) => (
               <Seat key={id} name={state.byId.get(id)!.name} seed={id} cleared subtitle="new" />
             ))}
           </View>
           <Body>
-            Every introduction is mutual — you both reserved room for it. From here on, you always know where
-            you stand.
+            They picked you while you were picking them. From here on, you always know where you stand.
           </Body>
         </Card>
       ) : (
         <Card>
           <Body>
-            No new introduction for you this week. Picked-without-room and unpicked are indistinguishable by
-            design — a quiet week is never a verdict.
+            Nothing new this Monday — and that's all it means. Picked-quietly and not-picked look identical
+            by design, so a quiet week is never a verdict. Someone may already be waiting on next week's board.
           </Body>
         </Card>
       )}
@@ -53,15 +52,15 @@ export function ResultsScreen() {
             <Stat n={state.metrics.at(-1)?.declarers ?? 0} label="declared in" />
           </StatRow>
           <Muted>
-            Mutual picks without capacity get no notice and no state — they simply stay eligible. Not clearing
-            is never a verdict.
+            Mutual sparks without room this week simply stay possible — no notice, no state, no verdict.
+            Some things are worth a week's wait.
           </Muted>
         </Card>
       )}
 
       {checkpoints.length > 0 && (
         <View style={{ gap: space(1.5) }}>
-          <Eyebrow tone="lamp">Checkpoints open — answer before the week turns</Eyebrow>
+          <Eyebrow tone="lamp">Check-ins open — answer before the week turns</Eyebrow>
           {checkpoints.map((c) => (
             <ConnectionCard key={c.id} conn={c} />
           ))}

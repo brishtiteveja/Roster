@@ -76,7 +76,7 @@ export function OnboardingScreen() {
       </View>
 
       <Button
-        label="This is my profile — enter Season 0"
+        label="That's me — deal me in"
         onPress={() => onboardApprove(approvedIds)}
         disabled={approvedIds.length === 0}
       />

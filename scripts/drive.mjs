@@ -58,7 +58,7 @@ try {
   await approves.nth(0).click(); await page.waitForTimeout(200);
   await approves.nth(0).click(); await page.waitForTimeout(200); // list shifts as one becomes "Approved"
   await shot('02-persona-approved');
-  await tap('This is my profile');
+  await tap("That's me — deal me in");
   await shot('03-declare');
 
   await tap("I'm In");
@@ -74,22 +74,22 @@ try {
   await shot('04b-board-sealed');
 
   // Seal + clear (match the action button text, not the "SEALED PICKS" heading)
-  const sealBtn = page.getByText(/Seal \d+ pick|Seal an empty/).first();
+  const sealBtn = page.getByText(/Seal \d+ pick|Sit this week out/).first();
   await sealBtn.click();
   await page.waitForTimeout(1400);
   await shot('05-match-overlay');
 
   // Dismiss the match overlay if it appeared.
-  const keepLooking = page.getByText('Keep looking', { exact: true });
+  const keepLooking = page.getByText('Play it cool', { exact: true });
   if (await keepLooking.count()) { await keepLooking.first().click(); await page.waitForTimeout(400); }
   await shot('05-results');
 
   // Persistence: a hard reload must restore the season exactly where it was.
   await page.reload({ waitUntil: 'networkidle' });
   await page.waitForTimeout(1500);
-  const restored = await page.getByText(/The clearing|A quiet week/).count();
+  const restored = await page.getByText(/said you back|A quiet week/).count();
   console.log('  persistence: restored to results screen =', restored > 0);
-  const kl2 = page.getByText('Keep looking', { exact: true });
+  const kl2 = page.getByText('Play it cool', { exact: true });
   if (await kl2.count()) { await kl2.first().click(); await page.waitForTimeout(400); }
   await shot('05c-reloaded');
 
@@ -99,7 +99,7 @@ try {
   await msgBtn.click();
   await page.waitForTimeout(500);
   await shot('07a-chat');
-  const input = page.getByPlaceholder(/Message /).first();
+  const input = page.getByPlaceholder(/worth a Saturday/).first();
   await input.fill('Hey! Saturday it is — I know a place.');
   await input.press('Enter');
   await page.waitForTimeout(2200);
@@ -116,16 +116,16 @@ try {
   await page.waitForTimeout(500);
   await shot('10-chat-checkpoint');
   // Vote straight from the banner (.last() = the chat overlay's button).
-  await page.getByText('Keep', { exact: true }).last().click();
+  await page.getByText('Still in', { exact: true }).last().click();
   await page.waitForTimeout(400);
   await shot('10b-checkpoint-sealed');
 
   // Graduation: confirm flow from the chat header, then the celebration.
   // Overlays render last in the DOM, so .last() targets them, not covered buttons.
-  await page.getByText('Graduate', { exact: true }).last().click();
+  await page.getByText('Go exclusive', { exact: true }).last().click();
   await page.waitForTimeout(600);
   await shot('09-graduate-confirm');
-  await page.getByText(/We're leaving together/).last().click();
+  await page.getByText(/Take me off the market/).last().click();
   await page.waitForTimeout(800);
   await shot('09b-graduated');
   await page.getByText('Take a bow', { exact: true }).last().click();
@@ -138,10 +138,10 @@ try {
       const heart = page.getByText('♥', { exact: true }).first();
       if (await heart.count()) { await heart.click(); await page.waitForTimeout(400); }
     }
-    const seal = page.getByText(/Seal \d+ pick|Seal an empty/).first();
+    const seal = page.getByText(/Seal \d+ pick|Sit this week out/).first();
     await seal.click();
     await page.waitForTimeout(1000);
-    const kl = page.getByText('Keep looking', { exact: true });
+    const kl = page.getByText('Play it cool', { exact: true });
     if (await kl.count()) { await kl.first().click(); await page.waitForTimeout(400); }
   }
   for (let w = 0; w < 3; w++) {

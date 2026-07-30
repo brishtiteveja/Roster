@@ -18,8 +18,8 @@ export function DeclareScreen() {
     <ScreenScroll>
       <Hero
         eyebrow={`Week ${state.week} · Monday, noon`}
-        title="Do you have room this week?"
-        subtitle={`You hold ${open} of ${PARAMS.K_ACTIVE} connections. Declaring In puts you on this week's boards — and puts others on yours.`}
+        title="Got room for someone?"
+        subtitle={`You're holding ${open} of ${PARAMS.K_ACTIVE}. Say you're in and you appear on this week's boards — and six people who already made room appear on yours.`}
         avatarSeed="you"
         avatarName="You"
       />
@@ -40,14 +40,14 @@ export function DeclareScreen() {
 
       {atCap ? (
         <Card lit>
-          <Eyebrow tone="lamp">At capacity</Eyebrow>
+          <Eyebrow tone="lamp">Hands full — enviably</Eyebrow>
           <Body>
-            Two connections is the whole capacity, so a pick means something. You won't appear on boards until
-            one closes — but you can still tend the two you have.
+            Two is the whole roster, and yours is full. You won't appear on boards until a spot opens —
+            which is exactly what makes being on yours mean something.
           </Body>
           <ChoiceCard
-            title="Continue the week"
-            subtitle="Skip the board, keep your connections"
+            title="Tend what you have"
+            subtitle="Skip the board, keep the sparks"
             tone="lamp"
             onPress={() => declare('paused')}
           />
@@ -55,15 +55,15 @@ export function DeclareScreen() {
       ) : (
         <View style={{ gap: space(1.5) }}>
           <ChoiceCard
-            title="I'm In"
-            subtitle="Build my board of six with room"
+            title="I'm in"
+            subtitle="Show me six who already said yes to being met"
             tone="lamp"
             big
             onPress={() => declare('in')}
           />
           <ChoiceCard
-            title="Paused this week"
-            subtitle="Silent and costless — no one is told"
+            title="Sitting this week out"
+            subtitle="Silent and costless — no one's told, nothing's counted"
             tone="muted"
             onPress={() => declare('paused')}
           />

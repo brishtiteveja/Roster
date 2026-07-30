@@ -17,8 +17,8 @@ export function SeasonEndScreen() {
     <ScreenScroll>
       <Hero
         eyebrow="Season 0 · six weeks · complete"
-        title={graduated.length ? 'You graduated.' : 'Season closed.'}
-        subtitle="The mission metric is graduations — couples who leave together. Reported, never optimised. They profit when you stay; Roster celebrates when you leave."
+        title={graduated.length ? 'Off the market.' : 'Season closed.'}
+        subtitle="The number this app brags about: couples who leave together. Reported, never optimised. They profit when you stay; we celebrate when you leave."
         tone={graduated.length ? 'verdigris' : 'lamp'}
         avatarSeed="you"
         avatarName="You"
@@ -26,11 +26,11 @@ export function SeasonEndScreen() {
 
       <Card good={graduated.length > 0}>
         <StatRow>
-          <Stat n={totalIntros} label="introductions you made" />
-          <Stat n={graduated.length} label="graduations" tone="verdigris" />
-          <Stat n={kept.length} label="carried into next season" tone="bone" />
+          <Stat n={totalIntros} label="matches you made" />
+          <Stat n={graduated.length} label="left together" tone="verdigris" />
+          <Stat n={kept.length} label="still sparking next season" tone="bone" />
         </StatRow>
-        <Muted>Across the cohort: {cohortIntros} introductions cleared over the season.</Muted>
+        <Muted>Across the cohort: {cohortIntros} matches cleared over the season.</Muted>
       </Card>
 
       {graduated.map((c) => (

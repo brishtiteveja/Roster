@@ -17,8 +17,8 @@ export function BoardScreen() {
   function overlapText(id: string): string {
     const c = state.byId.get(id)!;
     const win = player.windows.filter((w) => c.windows.includes(w)).map((w) => WINDOWS[w].split(' ')[0]);
-    if (win.length) return `both free ${win.slice(0, 2).join(' & ')}`;
-    return 'a broadening pick';
+    if (win.length) return `free when you are · ${win.slice(0, 2).join(' & ')}`;
+    return 'the bold pick';
   }
   function chips(id: string): string[] {
     const c = state.byId.get(id)!;
@@ -38,10 +38,10 @@ export function BoardScreen() {
 
   const done = (
     <View style={styles.doneCard}>
-      <Eyebrow tone="lamp">That's the board</Eyebrow>
-      <Text style={styles.doneTitle}>{picks.length ? `${picks.length} sealed.` : 'Nothing sealed.'}</Text>
+      <Eyebrow tone="lamp">That's everyone</Eyebrow>
+      <Text style={styles.doneTitle}>{picks.length ? `${picks.length} sealed. 🤫` : 'Playing hard to get?'}</Text>
       <Muted style={{ textAlign: 'center' }}>
-        Seal your picks and they meet real capacity at Monday's clearing — at most one new connection.
+        Seal them and Monday does the telling — if it's mutual and you both have room, you'll know at six.
       </Muted>
     </View>
   );
@@ -50,8 +50,8 @@ export function BoardScreen() {
     <View style={styles.wrap}>
       <View style={styles.header}>
         <Eyebrow tone="lamp">Week {state.week} · your board</Eyebrow>
-        <Text style={styles.title}>Six with room</Text>
-        <Muted>Swipe right to seal a pick (up to three), left to pass. Nobody learns they were passed over.</Muted>
+        <Text style={styles.title}>Six who made room</Text>
+        <Muted>Swipe right to want someone — quietly. Three picks, sealed lips till Monday. No one ever learns they were passed over.</Muted>
       </View>
 
       <View style={styles.deck}>
@@ -82,7 +82,7 @@ export function BoardScreen() {
           <Muted>{picks.length} / {PARAMS.PICKS_MAX} sealed</Muted>
         </View>
         <Button
-          label={picks.length ? `Seal ${picks.length} pick${picks.length > 1 ? 's' : ''} → clearing` : 'Seal an empty week'}
+          label={picks.length ? `Seal ${picks.length} pick${picks.length > 1 ? 's' : ''} — Monday tells` : 'Sit this week out'}
           onPress={submit}
         />
       </View>

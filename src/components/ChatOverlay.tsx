@@ -52,14 +52,14 @@ export function ChatOverlay({ connId }: { connId: string }) {
             <Text style={styles.sub}>
               {open
                 ? conn.activeConversation
-                  ? 'conversation alive — paperwork can’t close this'
-                  : `checkpoint every ${PARAMS.CHECK_INTERVAL_DAYS} days · talking keeps it alive`
-                : conn.state === 'GRADUATED' ? 'graduated 🎉' : 'closed'}
+                  ? 'this is alive — paperwork can’t touch it'
+                  : `check-in every ${PARAMS.CHECK_INTERVAL_DAYS} days · flirting counts as keeping it alive`
+                : conn.state === 'GRADUATED' ? 'off the market 🎉' : 'closed'}
             </Text>
           </View>
           {open && (
             <Pressable onPress={() => requestGraduate(connId)} hitSlop={8}>
-              <Text style={styles.gradLink}>Graduate</Text>
+              <Text style={styles.gradLink}>Go exclusive</Text>
             </Pressable>
           )}
         </View>
@@ -71,7 +71,7 @@ export function ChatOverlay({ connId }: { connId: string }) {
           showsVerticalScrollIndicator={false}
         >
           <Text style={styles.systemLine}>
-            Introduced at the Monday clearing, week {conn.weekIntroduced}. You both reserved room for this.
+            Matched at Monday's reveal, week {conn.weekIntroduced}. You both made room for this — act like it.
           </Text>
           {msgs.map((m, i) => {
             if (m.from === 'system') {
@@ -97,20 +97,20 @@ export function ChatOverlay({ connId }: { connId: string }) {
 
           {conn.state === 'CHECKPOINT_OPEN' && (
             <View style={styles.checkpointCard}>
-              <Text style={styles.checkpointTitle}>CHECKPOINT · ANSWER PRIVATELY</Text>
+              <Text style={styles.checkpointTitle}>THE WEEKLY “STILL INTO IT?” · JUST BETWEEN US</Text>
               <Text style={styles.checkpointBody}>
-                Both of you, within 48h. Votes are never revealed; the closer is never named. Talking here
-                counts — a living conversation can't be closed by paperwork.
+                You each answer in private. No one's answer is ever shown; no one is ever named. And flirting
+                here counts — a conversation this alive can't be ended by a form.
               </Text>
               {conn.votes[state.player.id] ? (
-                <Text style={styles.sealedNote}>✓ Your answer is sealed. It resolves at the results hour.</Text>
+                <Text style={styles.sealedNote}>✓ Sealed. Monday keeps your secret until the results hour.</Text>
               ) : (
                 <View style={styles.voteRow}>
-                  <Button label="Keep" kind="good" onPress={() => vote(connId, 'KEEP')} style={{ flex: 1 }} />
+                  <Button label="Still in" kind="good" onPress={() => vote(connId, 'KEEP')} style={{ flex: 1 }} />
                   {offersMoreTime(conn) && (
                     <Button label="More time" kind="ghost" onPress={() => vote(connId, 'MORE_TIME')} style={{ flex: 1 }} />
                   )}
-                  <Button label="Close" kind="danger" onPress={() => vote(connId, 'CLOSE')} style={{ flex: 1 }} />
+                  <Button label="Let it go" kind="danger" onPress={() => vote(connId, 'CLOSE')} style={{ flex: 1 }} />
                 </View>
               )}
             </View>
@@ -124,7 +124,7 @@ export function ChatOverlay({ connId }: { connId: string }) {
               value={draft}
               onChangeText={setDraft}
               onSubmitEditing={submit}
-              placeholder={`Message ${name}…`}
+              placeholder={`Say something worth a Saturday, ${name} is reading…`}
               placeholderTextColor={colors.muted}
               returnKeyType="send"
             />
@@ -134,7 +134,7 @@ export function ChatOverlay({ connId }: { connId: string }) {
           </View>
         ) : (
           <View style={styles.inputRow}>
-            <Text style={styles.closedNote}>This thread is closed. The room it held is open again.</Text>
+            <Text style={styles.closedNote}>This one's closed. The room it held is yours to spend again.</Text>
           </View>
         )}
       </KeyboardAvoidingView>

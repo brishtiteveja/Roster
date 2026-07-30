@@ -110,7 +110,7 @@ src/
 The board is a **Tinder-style swipe deck** — full-bleed cards with story-style progress segments,
 gradient scrims, name/age/bio, interest chips, and swipe-right-to-seal (preserving the sealed-pick
 mechanic and its "nobody learns they were passed over" guarantee). Clearing an introduction triggers a
-full-screen **"It's mutual."** recoupling overlay. There's an icon tab bar with a **Profile** tab
+full-screen **"The feeling's mutual."** reveal overlay. There's an icon tab bar with a **Profile** tab
 (portrait, persona receipts, windows/interests, the market's terms) and a gold-ringed new-matches strip
 on Connections. Profile faces are generated **offline** with [DiceBear](https://www.dicebear.com/)'s
 `lorelei` style (MIT) on per-person gradients — free, no attribution, no network, and no real person's

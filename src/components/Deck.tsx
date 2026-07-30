@@ -108,7 +108,7 @@ export function Deck({
         >
           <CardFace person={current} w={cardW} h={cardH} picked={picked} progress={{ i: index, n: people.length }} />
           <Animated.View style={[styles.stamp, styles.stampLike, { opacity: likeOpacity }]}>
-            <Text style={[styles.stampText, { color: colors.verdigris, borderColor: colors.verdigris }]}>PICK</Text>
+            <Text style={[styles.stampText, { color: colors.verdigris, borderColor: colors.verdigris }]}>WANT</Text>
           </Animated.View>
           <Animated.View style={[styles.stamp, styles.stampNope, { opacity: nopeOpacity }]}>
             <Text style={[styles.stampText, { color: colors.danger, borderColor: colors.danger }]}>PASS</Text>

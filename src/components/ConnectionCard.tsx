@@ -17,6 +17,16 @@ const stateTone: Record<string, 'lamp' | 'verdigris' | 'muted' | 'danger'> = {
   GRADUATED: 'verdigris',
 };
 
+// User-facing names for engine states — dating words, not paperwork words.
+const stateLabel: Record<string, string> = {
+  INTRODUCED: 'just matched',
+  ACTIVE: 'seeing each other',
+  CHECKPOINT_OPEN: 'check-in open',
+  CLOSED: 'closed',
+  SAFETY_CLOSED: 'safety closed',
+  GRADUATED: 'off the market',
+};
+
 export function ConnectionCard({ conn }: { conn: Connection }) {
   const { state, vote, markMet, close, report, openChat, requestGraduate } = useStore();
   const msgCount = (state.messages[conn.id] ?? []).length;
@@ -31,7 +41,7 @@ export function ConnectionCard({ conn }: { conn: Connection }) {
   return (
     <Card lit={open} good={graduated} style={closed ? { opacity: 0.6 } : undefined}>
       <View style={styles.head}>
-        <Eyebrow tone={stateTone[conn.state]}>{conn.state.replace('_', ' ')}</Eyebrow>
+        <Eyebrow tone={stateTone[conn.state]}>{stateLabel[conn.state] ?? conn.state}</Eyebrow>
         <Muted>wk {conn.weekIntroduced}</Muted>
       </View>
       <View style={styles.person}>
@@ -42,23 +52,23 @@ export function ConnectionCard({ conn }: { conn: Connection }) {
         </View>
       </View>
 
-      {conn.dateAcknowledged && !closed && !graduated && <Pill tone="verdigris">date confirmed · faster checkpoint</Pill>}
+      {conn.dateAcknowledged && !closed && !graduated && <Pill tone="verdigris">date confirmed · sooner check-in</Pill>}
 
       {open ? (
         <View style={{ gap: space(1) }}>
           <Muted>
-            Checkpoint. Both of you answer privately within {PARAMS.CHECK_DEADLINE_HOURS}h. Votes are never
-            revealed; the closer is never named.
+            The weekly "still into it?" — you each answer in private, within {PARAMS.CHECK_DEADLINE_HOURS}h.
+            No one's answer is shown; no one is named.
           </Muted>
           <View style={styles.row}>
-            <Button label={myVote === 'KEEP' ? '✓ Keep' : 'Keep'} kind={myVote === 'KEEP' ? 'good' : 'ghost'} onPress={() => vote(conn.id, 'KEEP')} style={{ flex: 1 }} />
+            <Button label={myVote === 'KEEP' ? '✓ Still in' : 'Still in'} kind={myVote === 'KEEP' ? 'good' : 'ghost'} onPress={() => vote(conn.id, 'KEEP')} style={{ flex: 1 }} />
             {offersMoreTime(conn) && (
               <Button label={myVote === 'MORE_TIME' ? '✓ More time' : 'More time'} kind={myVote === 'MORE_TIME' ? 'primary' : 'ghost'} onPress={() => vote(conn.id, 'MORE_TIME')} style={{ flex: 1 }} />
             )}
-            <Button label={myVote === 'CLOSE' ? '✓ Close' : 'Close'} kind={myVote === 'CLOSE' ? 'danger' : 'ghost'} onPress={() => vote(conn.id, 'CLOSE')} style={{ flex: 1 }} />
+            <Button label={myVote === 'CLOSE' ? '✓ Let it go' : 'Let it go'} kind={myVote === 'CLOSE' ? 'danger' : 'ghost'} onPress={() => vote(conn.id, 'CLOSE')} style={{ flex: 1 }} />
           </View>
-          {!offersMoreTime(conn) && <Muted>Third checkpoint running — keep or close only.</Muted>}
-          {myVote && <Muted>Sealed. Resolves at the next results hour.</Muted>}
+          {!offersMoreTime(conn) && <Muted>Third check-in in a row — this one's yes or goodbye.</Muted>}
+          {myVote && <Muted>Sealed. Monday keeps your secret until the results hour.</Muted>}
           <Button
             label={msgCount ? `Message · ${msgCount}` : 'Message'}
             kind="ghost"
@@ -69,10 +79,10 @@ export function ConnectionCard({ conn }: { conn: Connection }) {
         <Muted>
           {conn.state === 'SAFETY_CLOSED'
             ? 'Closed for safety — immediately, its own handling.'
-            : 'This connection has closed. That room is open again.'}
+            : 'This one closed, kindly. That room is yours to spend again.'}
         </Muted>
       ) : graduated ? (
-        <Muted>You both left the market together. 🎉</Muted>
+        <Muted>You two left together — the best ending this app has. 🎉</Muted>
       ) : (
         <View style={{ gap: space(1) }}>
           <Button
@@ -80,11 +90,11 @@ export function ConnectionCard({ conn }: { conn: Connection }) {
             onPress={() => openChat(conn.id)}
           />
           {!conn.dateAcknowledged && (
-            <Button label="We met — confirm the date" kind="ghost" onPress={() => markMet(conn.id)} />
+            <Button label="We met — and it happened" kind="ghost" onPress={() => markMet(conn.id)} />
           )}
           <View style={styles.row}>
-            <Button label="Graduate" kind="good" onPress={() => requestGraduate(conn.id)} style={{ flex: 1 }} />
-            <Button label="Close" kind="ghost" onPress={() => close(conn.id)} style={{ flex: 1 }} />
+            <Button label="Go exclusive" kind="good" onPress={() => requestGraduate(conn.id)} style={{ flex: 1 }} />
+            <Button label="Let it go" kind="ghost" onPress={() => close(conn.id)} style={{ flex: 1 }} />
           </View>
           <Button label="Report a safety concern" kind="danger" onPress={() => report(conn.id)} />
         </View>
