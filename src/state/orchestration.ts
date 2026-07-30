@@ -437,6 +437,10 @@ function resolveSimConnections(state: GameState, connections: Connection[]): Con
 export function advanceWeek(state: GameState): GameState {
   let connections = state.connections.slice();
   const log = [...state.log];
+  const messages = { ...state.messages };
+  const pushSystem = (connId: string, text: string, week: number) => {
+    messages[connId] = [...(messages[connId] ?? []), { from: 'system', text, week }];
+  };
 
   // 1. Resolve any open player checkpoints (votes or non-response rules). The
   //    simulated partner casts its private vote here if it hasn't already.
@@ -454,6 +458,12 @@ export function advanceWeek(state: GameState): GameState {
     const res = resolveCheckpoint(c);
     if (res.outcome === 'CLOSED') {
       log.push(`Checkpoint with ${name(state, c.a === state.player.id ? c.b : c.a)} resolved: closed.`);
+    } else if (involvesPlayer) {
+      pushSystem(
+        c.id,
+        `Checkpoint resolved — still on. Next one in ${res.nextIntervalDays ?? 7} days. Votes are never revealed.`,
+        state.week
+      );
     }
     return res.conn;
   });
@@ -469,13 +479,21 @@ export function advanceWeek(state: GameState): GameState {
     const involvesPlayer = c.a === state.player.id || c.b === state.player.id;
     if (!involvesPlayer || c.state !== 'ACTIVE') return c;
     const age = nextWeek - c.weekIntroduced;
-    if (age >= 1) return openCheckpoint(c);
+    if (age >= 1) {
+      pushSystem(
+        c.id,
+        'Checkpoint open — you both answer privately within 48h (one reminder at 24h). Keep · More time · Close. A living conversation can’t be closed by paperwork.',
+        nextWeek
+      );
+      return openCheckpoint(c);
+    }
     return c;
   });
 
   const base: GameState = {
     ...state,
     connections,
+    messages,
     week: nextWeek,
     declaration: 'in',
     board: null,

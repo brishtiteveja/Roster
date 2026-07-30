@@ -1,6 +1,7 @@
-import React, { createContext, useContext, useMemo, useReducer } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { CheckpointVote } from '../engine';
 import { PROPOSED } from '../data/persona';
+import { loadSeason, saveSeason } from './persistence';
 import {
   GameState, initSeason, buildBoard, togglePick, runClearing, advanceWeek,
   vote, markMet, closeNow, reportSafety, graduateNow,
@@ -24,7 +25,8 @@ type Action =
   | { type: 'CONFIRM_GRADUATE'; connId: string }
   | { type: 'DISMISS_CELEBRATE' }
   | { type: 'ADVANCE' }
-  | { type: 'RESET'; seed: string };
+  | { type: 'RESET'; seed: string }
+  | { type: 'HYDRATE'; state: GameState };
 
 function reducer(state: GameState, action: Action): GameState {
   switch (action.type) {
@@ -72,6 +74,8 @@ function reducer(state: GameState, action: Action): GameState {
       return advanceWeek(state);
     case 'RESET':
       return initSeason(action.seed);
+    case 'HYDRATE':
+      return action.state;
     default:
       return state;
   }
@@ -101,6 +105,29 @@ const Ctx = createContext<Store | null>(null);
 
 export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(reducer, 'roster-season-0', initSeason);
+  const [hydrated, setHydrated] = useState(false);
+  const skipNextSave = useRef(false);
+
+  // Load a saved season once on mount; only start saving after the attempt,
+  // so a fresh boot never clobbers an existing save before it loads.
+  useEffect(() => {
+    let cancelled = false;
+    loadSeason().then((saved) => {
+      if (cancelled) return;
+      if (saved) {
+        skipNextSave.current = true;
+        dispatch({ type: 'HYDRATE', state: saved });
+      }
+      setHydrated(true);
+    });
+    return () => { cancelled = true; };
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    if (skipNextSave.current) { skipNextSave.current = false; return; }
+    saveSeason(state);
+  }, [state, hydrated]);
   const store = useMemo<Store>(
     () => ({
       state,

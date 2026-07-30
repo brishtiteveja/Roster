@@ -7,11 +7,13 @@ import { colors, radius, space } from '../theme';
 import { useStore } from '../state/store';
 import { partnerName, partnerId } from '../state/orchestration';
 import { PARAMS, isOpen } from '../engine';
+import { offersMoreTime } from '../engine/checkpoint';
 import { Avatar } from './Avatar';
+import { Button } from './ui';
 
 /** Full-screen message thread for one connection. */
 export function ChatOverlay({ connId }: { connId: string }) {
-  const { state, openChat, send, requestGraduate } = useStore();
+  const { state, openChat, send, requestGraduate, vote } = useStore();
   const [draft, setDraft] = useState('');
   const scrollRef = useRef<ScrollView>(null);
 
@@ -72,6 +74,13 @@ export function ChatOverlay({ connId }: { connId: string }) {
             Introduced at the Monday clearing, week {conn.weekIntroduced}. You both reserved room for this.
           </Text>
           {msgs.map((m, i) => {
+            if (m.from === 'system') {
+              return (
+                <Text key={i} style={styles.systemMsg}>
+                  ◆ {m.text}
+                </Text>
+              );
+            }
             const mine = m.from === state.player.id;
             return (
               <View key={i} style={[styles.row, mine && { justifyContent: 'flex-end' }]}>
@@ -84,6 +93,27 @@ export function ChatOverlay({ connId }: { connId: string }) {
           })}
           {msgs.length > 0 && msgs[msgs.length - 1].from === state.player.id && (
             <Text style={styles.typing}>…</Text>
+          )}
+
+          {conn.state === 'CHECKPOINT_OPEN' && (
+            <View style={styles.checkpointCard}>
+              <Text style={styles.checkpointTitle}>CHECKPOINT · ANSWER PRIVATELY</Text>
+              <Text style={styles.checkpointBody}>
+                Both of you, within 48h. Votes are never revealed; the closer is never named. Talking here
+                counts — a living conversation can't be closed by paperwork.
+              </Text>
+              {conn.votes[state.player.id] ? (
+                <Text style={styles.sealedNote}>✓ Your answer is sealed. It resolves at the results hour.</Text>
+              ) : (
+                <View style={styles.voteRow}>
+                  <Button label="Keep" kind="good" onPress={() => vote(connId, 'KEEP')} style={{ flex: 1 }} />
+                  {offersMoreTime(conn) && (
+                    <Button label="More time" kind="ghost" onPress={() => vote(connId, 'MORE_TIME')} style={{ flex: 1 }} />
+                  )}
+                  <Button label="Close" kind="danger" onPress={() => vote(connId, 'CLOSE')} style={{ flex: 1 }} />
+                </View>
+              )}
+            </View>
           )}
         </ScrollView>
 
@@ -140,6 +170,18 @@ const styles = StyleSheet.create({
   theirs: { backgroundColor: colors.panel, borderBottomLeftRadius: 6, borderWidth: 1, borderColor: colors.line },
   msgText: { color: colors.bone, fontSize: 15, lineHeight: 21 },
   typing: { color: colors.muted, fontSize: 22, marginLeft: 40, marginTop: -4 },
+  systemMsg: {
+    color: colors.muted, fontSize: 12, lineHeight: 17, textAlign: 'center',
+    paddingHorizontal: space(3), marginVertical: space(0.5),
+  },
+  checkpointCard: {
+    borderWidth: 1.4, borderColor: colors.lamp, backgroundColor: colors.lampSoft,
+    borderRadius: radius.lg, padding: space(2), gap: space(1), marginTop: space(1),
+  },
+  checkpointTitle: { color: colors.lamp, fontSize: 11, fontWeight: '800', letterSpacing: 1.5 },
+  checkpointBody: { color: colors.bone, fontSize: 13.5, lineHeight: 19 },
+  sealedNote: { color: colors.verdigris, fontSize: 13, fontWeight: '600' },
+  voteRow: { flexDirection: 'row', gap: space(1) },
   inputRow: {
     flexDirection: 'row', alignItems: 'center', gap: space(1.25),
     padding: space(1.5), backgroundColor: colors.night,

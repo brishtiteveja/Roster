@@ -23,6 +23,30 @@ npm run android
 npm start          # Expo dev server (scan the QR with Expo Go)
 ```
 
+## Play it on your phone
+
+**Fastest — Expo Go (no account needed):** install [Expo Go](https://expo.dev/go) on your phone, then
+
+```bash
+npm start          # add --tunnel if your phone isn't on the same Wi-Fi
+```
+
+and scan the QR code. The season autosaves on-device, so you can close the app and pick the week back up.
+
+**Shareable preview — EAS (one-time login):**
+
+```bash
+npm i -g eas-cli
+eas login          # free Expo account
+eas init           # links the project (writes projectId into app.json)
+eas update --branch preview --message "Roster preview"   # shareable QR/link via expo.dev
+# or a standalone Android APK anyone can install:
+eas build --profile preview --platform android
+```
+
+`eas.json` is already configured (`preview` builds an installable APK). These commands need your Expo
+account, so run them from your machine — everything else is set up.
+
 Verify the mechanism logic without launching the UI:
 
 ```bash
