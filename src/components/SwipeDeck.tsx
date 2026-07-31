@@ -10,7 +10,7 @@ import { colors, radius, shadow, space } from '../theme';
 
 const SCREEN = Dimensions.get('window').width;
 const SWIPE_X = SCREEN * 0.26;
-const CARD_H = 420;
+const CARD_H = 380;
 
 export interface DeckCard {
   id: string;

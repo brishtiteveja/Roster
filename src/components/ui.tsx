@@ -115,11 +115,11 @@ export function Seat({
   );
 }
 
-export function ScreenScroll({ children }: { children: React.ReactNode }) {
+export function ScreenScroll({ children, padBottom }: { children: React.ReactNode; padBottom?: number }) {
   return (
     <ScrollView
       style={{ flex: 1, backgroundColor: colors.ground }}
-      contentContainerStyle={{ padding: space(2.5), paddingBottom: space(13), gap: space(2) }}
+      contentContainerStyle={{ padding: space(2.5), paddingBottom: padBottom ?? space(13), gap: space(2) }}
       showsVerticalScrollIndicator={false}
     >
       {children}

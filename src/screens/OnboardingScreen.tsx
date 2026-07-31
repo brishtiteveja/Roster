@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { colors, space } from '../theme';
 import { PROPOSED, EvidenceSource } from '../data/persona';
 import { useStore } from '../state/store';
@@ -34,7 +34,7 @@ export function OnboardingScreen() {
   const done = kept.length + dropped.length >= CARDS.length;
 
   return (
-    <ScreenScroll>
+    <ScreenScroll padBottom={space(3)}>
       <Hero
         eyebrow="Your profile"
         title="We drafted you. You decide."
@@ -42,6 +42,10 @@ export function OnboardingScreen() {
         avatarSeed="you"
         avatarName="You"
       />
+
+      <Pressable onPress={() => setToured(false)} hitSlop={8} style={styles.tourLink}>
+        <Text style={styles.tourLinkText}>↺  Watch the tour again</Text>
+      </Pressable>
 
       <SwipeDeck
         cards={CARDS}
@@ -73,4 +77,6 @@ export function OnboardingScreen() {
 
 const styles = StyleSheet.create({
   tally: { alignItems: 'center' },
+  tourLink: { alignSelf: 'center', marginTop: -space(0.75) },
+  tourLinkText: { color: colors.lamp, fontSize: 13.5, fontWeight: '700', letterSpacing: 0.2 },
 });
