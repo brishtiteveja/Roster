@@ -1,0 +1,37 @@
+{
+  "name": "roster",
+  "version": "1.0.0",
+  "description": "Roster — a weekly-clearing dating market (React Native / Expo). Mechanism Spec v5.2.2.",
+  "main": "index.ts",
+  "dependencies": {
+    "@dicebear/collection": "^9.4.2",
+    "@dicebear/core": "^9.4.3",
+    "@expo/metro-runtime": "^57.0.7",
+    "@react-native-async-storage/async-storage": "^3.1.1",
+    "expo": "~57.0.8",
+    "expo-linear-gradient": "^57.0.1",
+    "expo-status-bar": "~57.0.1",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "react-native": "0.86.0",
+    "react-native-svg": "^15.15.5",
+    "react-native-web": "^0.21.2"
+  },
+  "devDependencies": {
+    "@types/react": "~19.2.2",
+    "playwright-core": "^1.62.0",
+    "tsx": "^4.23.1",
+    "typescript": "~6.0.3"
+  },
+  "scripts": {
+    "start": "expo start",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "web": "expo start --web",
+    "typecheck": "tsc --noEmit",
+    "test:engine": "tsx src/engine/__smoke__.ts",
+    "test:season": "tsx src/state/__season__.ts",
+    "test": "npm run typecheck && npm run test:engine && npm run test:season"
+  },
+  "private": true
+}
