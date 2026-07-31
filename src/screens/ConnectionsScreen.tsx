@@ -20,7 +20,7 @@ export function ConnectionsScreen() {
       <Hero
         eyebrow={`Your connections · at most ${PARAMS.K_ACTIVE}`}
         title="Nothing trails off."
-        subtitle="A pick means something. Either person can close, kindly, with no reason recorded. Miss two check-ins in silence and it closes — silence gets an ending instead of becoming one."
+        subtitle="Either of you can end it. Go quiet twice and it ends itself."
       />
 
       {open.length > 0 && (
@@ -41,7 +41,7 @@ export function ConnectionsScreen() {
 
       {open.length === 0 && (
         <Card>
-          <Body>No open connections right now. Declare In to appear on boards again.</Body>
+          <Body>Nothing open. Say you\u2019re in to get a board.</Body>
         </Card>
       )}
 

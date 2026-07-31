@@ -8,7 +8,7 @@ import { PARAMS } from '../engine';
 import { Body, Button, Card, Eyebrow, Muted, Pill, ScreenScroll } from '../components/ui';
 import { Avatar } from '../components/Avatar';
 
-/** The player's own profile — receipts, windows, and the market's terms. */
+/** The player's own profile. */
 export function ProfileScreen() {
   const { state } = useStore();
   const [exported, setExported] = useState(false);
@@ -25,7 +25,7 @@ export function ProfileScreen() {
       <Card>
         <Eyebrow tone="verdigris">Persona receipts · approved by you</Eyebrow>
         {receipts.length === 0 ? (
-          <Muted>Nothing approved yet — your graph is empty until you say otherwise.</Muted>
+          <Muted>Nothing kept yet.</Muted>
         ) : (
           receipts.map((e) => (
             <View key={e.id} style={styles.receipt}>
@@ -37,7 +37,11 @@ export function ProfileScreen() {
             </View>
           ))
         )}
-        <Muted>Every item is labeled by source. Nothing here was auto-accepted.</Muted>
+        <Muted>
+          {receipts.length === PROPOSED.length
+            ? 'You kept every one of these.'
+            : `You kept ${receipts.length} of ${PROPOSED.length} drafts. The rest are gone.`}
+        </Muted>
       </Card>
 
       <Card>
@@ -52,7 +56,7 @@ export function ProfileScreen() {
       </Card>
 
       <Card>
-        <Eyebrow>The market's terms — same for everyone</Eyebrow>
+        <Eyebrow>Same rules for everyone</Eyebrow>
         <Row label="Openings" value="1 per week" />
         <Row label="Picks" value={`sealed · up to ${PARAMS.PICKS_MAX}`} />
         <Row label="Active connections" value={`at most ${PARAMS.K_ACTIVE}`} />

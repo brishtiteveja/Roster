@@ -47,8 +47,8 @@ export function ResultsScreen() {
         <Card>
           <Eyebrow>Across the cohort this week</Eyebrow>
           <StatRow>
-            <Stat n={clearing.introductions.length} label="introductions cleared" />
-            <Stat n={clearing.unclearedMutual.length} label="mutual, no room yet" />
+            <Stat n={clearing.introductions.length} label="matches made" />
+            <Stat n={clearing.unclearedMutual.length} label="liked back, no space" />
             <Stat n={state.metrics.at(-1)?.declarers ?? 0} label="declared in" />
           </StatRow>
           <Muted>

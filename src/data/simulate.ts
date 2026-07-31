@@ -85,7 +85,7 @@ const ICEBREAKERS = [
   'We both kept {win} open. That felt like a sign worth spending my opening on.',
   'Hi! I saw {int} on your card and picked before I could overthink it.',
   'One opening a week and I spent it here. No pressure, but also — some pressure.',
-  'So the market says we both made room. What are we doing with it?',
+  'We picked each other. That felt good to see.',
   'I picked you on the broadening edge, which is the algorithm’s way of saying "be brave."',
   'Okay, sealed pick, mutual clearing — the ceremony is done. Now we just… talk?',
 ];
@@ -110,7 +110,7 @@ const PLAN_REPLIES = [
   'Let’s actually do it — {win}? There’s a place I’ve been meaning to try.',
   'Proposal: {win}, in person, phones away. The checkpoint can find us there.',
   'Yes. {win}. If it goes well we tell the checkpoint KEEP together.',
-  'I’m free {win}. Let’s give the market something to write home about.',
+  'I’m free {win} if you are.',
 ];
 
 function fill(line: string, p: Persona, sharedWin: string, sharedInt: string): string {

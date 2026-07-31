@@ -349,7 +349,7 @@ export function graduateNow(state: GameState, connId: string): GameState {
   });
   const next = { ...state, connections };
   next.activeCount = recomputeActive(next);
-  next.log = [...state.log, `You and ${name(state, otherParty(state, connId))} went exclusive — off the market, together. 🎉`];
+  next.log = [...state.log, `You and ${name(state, otherParty(state, connId))} are exclusive. 🎉`];
   return next;
 }
 
@@ -413,7 +413,7 @@ function name(state: GameState, id: string): string {
 
 // ---- week boundary ---------------------------------------------------------
 
-/** Seeded resolution of off-stage (sim–sim) connections so the market breathes. */
+/** Seeded resolution of off-stage (sim–sim) connections. */
 function resolveSimConnections(state: GameState, connections: Connection[]): Connection[] {
   const rng = new RNG(`simresolve::${state.seed}::${state.week}`);
   return connections.map((c) => {

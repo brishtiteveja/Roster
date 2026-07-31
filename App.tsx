@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Pressable, StyleSheet, Platform, SafeAreaView } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { colors, space, type as t } from './src/theme';
+import { colors, shadow, space, type as t } from './src/theme';
 import { StoreProvider, useStore } from './src/state/store';
 import { openCheckpointsForPlayer, openPlayerConnections } from './src/state/orchestration';
 import { OnboardingScreen } from './src/screens/OnboardingScreen';
@@ -64,13 +64,10 @@ function Shell() {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
       <View style={styles.header}>
-        <View style={styles.headerLeft}>
-          <Text style={styles.wordmark}>ROSTER</Text>
-          <Text style={styles.headerItalic}>availability, cleared</Text>
-        </View>
-        <Text style={styles.tag}>{phaseTag(state.phase, state.week)}</Text>
+        <Text style={styles.wordmark}>ROSTER</Text>
+        <Text style={styles.tag} numberOfLines={1}>{phaseTag(state.phase, state.week)}</Text>
       </View>
 
       <View style={styles.body}>
@@ -118,31 +115,32 @@ function Shell() {
 }
 
 function TabButton({
-  label, icon: Icon, active, onPress, badge, sub,
+  label, icon: Icon, active, onPress, badge,
 }: {
   label: string;
-  icon: (p: { color: string; size?: number }) => React.JSX.Element;
+  icon: (p: { color: string; size?: number; filled?: boolean }) => React.JSX.Element;
   active: boolean;
   onPress: () => void;
   badge?: number;
   sub?: string;
 }) {
-  const color = active ? colors.lamp : colors.muted;
+  const color = active ? colors.night : colors.muted;
   return (
-    <Pressable onPress={onPress} style={styles.tab}>
-      <View style={{ alignItems: 'center', gap: 3 }}>
-        <View>
-          <Icon color={color} size={23} />
-          {badge ? (
-            <View style={styles.badge}>
-              <Text style={styles.badgeText}>{badge}</Text>
-            </View>
-          ) : null}
-        </View>
-        <Text style={[styles.tabLabel, { color }]}>{label}</Text>
-        {sub ? <Text style={styles.tabSub}>{sub}</Text> : null}
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      style={({ pressed }) => [styles.tab, active && styles.tabOn, { opacity: pressed ? 0.75 : 1 }]}
+    >
+      <View>
+        <Icon color={color} size={22} filled={active} />
+        {badge ? (
+          <View style={styles.badge}>
+            <Text style={styles.badgeText}>{badge}</Text>
+          </View>
+        ) : null}
       </View>
-      {active && <View style={styles.tabUnderline} />}
+      {active ? <Text style={styles.tabLabel}>{label}</Text> : null}
     </Pressable>
   );
 }
@@ -159,26 +157,38 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.night, paddingTop: Platform.OS === 'android' ? 28 : 0 },
   header: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-    paddingHorizontal: space(2.5), paddingVertical: space(1.75),
+    paddingHorizontal: space(2.5), paddingVertical: space(1.5),
     backgroundColor: colors.night, borderBottomWidth: 1, borderBottomColor: colors.line,
   },
-  headerLeft: { flexDirection: 'row', alignItems: 'baseline', gap: space(1.5) },
+  headerLeft: { flexDirection: 'row', alignItems: 'baseline', gap: space(1.5), flexShrink: 1 },
   wordmark: { color: colors.bone, ...t.wordmark },
   headerItalic: { color: colors.lamp, fontStyle: 'italic', fontSize: 14 },
   tag: { color: colors.muted, ...t.tiny, fontWeight: '600' },
   body: { flex: 1, backgroundColor: colors.ground },
   tabbar: {
-    flexDirection: 'row', backgroundColor: colors.night,
-    borderTopWidth: 1, borderTopColor: colors.line,
-    paddingBottom: Platform.OS === 'ios' ? space(2) : space(1),
+    position: 'absolute',
+    left: space(2), right: space(2),
+    bottom: Platform.OS === 'ios' ? space(1) : space(1.5),
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 4,
+    padding: 6,
+    borderRadius: 999,
+    backgroundColor: 'rgba(255,255,255,0.92)',
+    borderWidth: 1,
+    borderColor: colors.lineStrong,
+    ...shadow.lift,
   },
-  tab: { flex: 1, alignItems: 'center', paddingVertical: space(1.25), justifyContent: 'center' },
-  tabLabel: { fontSize: 11, fontWeight: '600', letterSpacing: 0.3 },
-  tabSub: { color: colors.muted, fontSize: 9.5, textAlign: 'center', opacity: 0.7 },
-  tabUnderline: { position: 'absolute', top: 0, height: 2, width: 36, backgroundColor: colors.lamp, borderRadius: 2 },
+  tab: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 7,
+    paddingVertical: 11, paddingHorizontal: 14, borderRadius: 999, flexShrink: 1,
+  },
+  tabOn: { backgroundColor: colors.lamp },
+  tabLabel: { fontSize: 13, fontWeight: '700', letterSpacing: -0.1, color: colors.night },
   badge: {
     position: 'absolute', top: -5, right: -10,
-    backgroundColor: colors.lamp, borderRadius: 8, minWidth: 16, height: 16,
+    backgroundColor: colors.danger, borderRadius: 8, minWidth: 16, height: 16,
     alignItems: 'center', justifyContent: 'center', paddingHorizontal: 3,
   },
   badgeText: { color: colors.night, fontSize: 10, fontWeight: '800' },

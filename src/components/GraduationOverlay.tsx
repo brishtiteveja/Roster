@@ -87,13 +87,11 @@ export function GraduationOverlay() {
               </View>
             </View>
             <Text style={styles.sub}>
-              Going exclusive with {name} takes you both off the market — boards, picks, all of it. Anyone
-              else you're seeing gets the usual kind notice, nothing more. This is the ending the whole
-              system is built to want, and it only happens when you both say so.
+              You and {name} stop seeing other people. It only happens if you both say yes.
             </Text>
             <View style={styles.actions}>
               <Button
-                label="Take me off the market"
+                label="We're exclusive"
                 kind="good"
                 onPress={() => confirmGraduate(connId)}
                 style={{ alignSelf: 'stretch' }}

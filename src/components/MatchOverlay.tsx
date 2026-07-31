@@ -70,8 +70,7 @@ export function MatchOverlay({
 
         <Text style={styles.names}>You & {partnerName}</Text>
         <Text style={styles.sub}>
-          Two sealed picks, each with the other's name on it. You spent your one opening on each other
-          before you'd even said hello.
+          You picked each other before you'd even said hello.
         </Text>
 
         <View style={styles.actions}>

@@ -19,7 +19,7 @@ export function DeclareScreen() {
       <Hero
         eyebrow={`Week ${state.week} · Monday, noon`}
         title="Got room for someone?"
-        subtitle={`You're holding ${open} of ${PARAMS.K_ACTIVE}. Say you're in and you appear on this week's boards — and six people who already made room appear on yours.`}
+        subtitle={`${open} of ${PARAMS.K_ACTIVE} spots full. Say you're in, get six.`}
         avatarSeed="you"
         avatarName="You"
       />
@@ -35,7 +35,7 @@ export function DeclareScreen() {
             <Pill key={w} tone="muted">{WINDOWS[w]}</Pill>
           ))}
         </View>
-        <Muted>Overlap is half of your affinity to anyone else.</Muted>
+        <Muted>Shared free time is half of why you match.</Muted>
       </Card>
 
       {atCap ? (
@@ -56,14 +56,14 @@ export function DeclareScreen() {
         <View style={{ gap: space(1.5) }}>
           <ChoiceCard
             title="I'm in"
-            subtitle="Show me six who already said yes to being met"
+            subtitle="Six people. All said yes."
             tone="lamp"
             big
             onPress={() => declare('in')}
           />
           <ChoiceCard
             title="Sitting this week out"
-            subtitle="Silent and costless — no one's told, nothing's counted"
+            subtitle="Nobody's told. Nothing counts against you."
             tone="muted"
             onPress={() => declare('paused')}
           />

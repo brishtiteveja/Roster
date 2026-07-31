@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   View, Text, StyleSheet, Pressable, TextInput, ScrollView,
-  KeyboardAvoidingView, Platform,
+  KeyboardAvoidingView, Platform, SafeAreaView,
 } from 'react-native';
 import { colors, radius, space } from '../theme';
 import { useStore } from '../state/store';
@@ -37,7 +37,7 @@ export function ChatOverlay({ connId }: { connId: string }) {
   }
 
   return (
-    <View style={styles.backdrop}>
+    <SafeAreaView style={styles.backdrop}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={{ flex: 1 }}
@@ -52,9 +52,9 @@ export function ChatOverlay({ connId }: { connId: string }) {
             <Text style={styles.sub}>
               {open
                 ? conn.activeConversation
-                  ? 'this is alive — paperwork can’t touch it'
-                  : `check-in every ${PARAMS.CHECK_INTERVAL_DAYS} days · flirting counts as keeping it alive`
-                : conn.state === 'GRADUATED' ? 'off the market 🎉' : 'closed'}
+                  ? 'alive right now'
+                  : `check in every ${PARAMS.CHECK_INTERVAL_DAYS} days`
+                : conn.state === 'GRADUATED' ? 'exclusive 🎉' : 'closed'}
             </Text>
           </View>
           {open && (
@@ -71,7 +71,7 @@ export function ChatOverlay({ connId }: { connId: string }) {
           showsVerticalScrollIndicator={false}
         >
           <Text style={styles.systemLine}>
-            Matched at Monday's reveal, week {conn.weekIntroduced}. You both made room for this — act like it.
+            Matched week {conn.weekIntroduced}. You both picked each other.
           </Text>
           {msgs.map((m, i) => {
             if (m.from === 'system') {
@@ -97,13 +97,12 @@ export function ChatOverlay({ connId }: { connId: string }) {
 
           {conn.state === 'CHECKPOINT_OPEN' && (
             <View style={styles.checkpointCard}>
-              <Text style={styles.checkpointTitle}>THE WEEKLY “STILL INTO IT?” · JUST BETWEEN US</Text>
+              <Text style={styles.checkpointTitle}>STILL INTO IT?</Text>
               <Text style={styles.checkpointBody}>
-                You each answer in private. No one's answer is ever shown; no one is ever named. And flirting
-                here counts — a conversation this alive can't be ended by a form.
+                Private. Nobody sees your answer. If you two are talking, it stays open anyway.
               </Text>
               {conn.votes[state.player.id] ? (
-                <Text style={styles.sealedNote}>✓ Sealed. Monday keeps your secret until the results hour.</Text>
+                <Text style={styles.sealedNote}>✓ Sealed until Monday.</Text>
               ) : (
                 <View style={styles.voteRow}>
                   <Button label="Still in" kind="good" onPress={() => vote(connId, 'KEEP')} style={{ flex: 1 }} />
@@ -124,7 +123,7 @@ export function ChatOverlay({ connId }: { connId: string }) {
               value={draft}
               onChangeText={setDraft}
               onSubmitEditing={submit}
-              placeholder={`Say something worth a Saturday, ${name} is reading…`}
+              placeholder={`Message ${name}…`}
               placeholderTextColor={colors.muted}
               returnKeyType="send"
             />
@@ -134,11 +133,11 @@ export function ChatOverlay({ connId }: { connId: string }) {
           </View>
         ) : (
           <View style={styles.inputRow}>
-            <Text style={styles.closedNote}>This one's closed. The room it held is yours to spend again.</Text>
+            <Text style={styles.closedNote}>Closed. That spot is free again.</Text>
           </View>
         )}
       </KeyboardAvoidingView>
-    </View>
+    </SafeAreaView>
   );
 }
 

@@ -24,7 +24,7 @@ const stateLabel: Record<string, string> = {
   CHECKPOINT_OPEN: 'check-in open',
   CLOSED: 'closed',
   SAFETY_CLOSED: 'safety closed',
-  GRADUATED: 'off the market',
+  GRADUATED: 'exclusive',
 };
 
 export function ConnectionCard({ conn }: { conn: Connection }) {
@@ -79,7 +79,7 @@ export function ConnectionCard({ conn }: { conn: Connection }) {
         <Muted>
           {conn.state === 'SAFETY_CLOSED'
             ? 'Closed for safety — immediately, its own handling.'
-            : 'This one closed, kindly. That room is yours to spend again.'}
+            : 'Closed. That spot is free again.'}
         </Muted>
       ) : graduated ? (
         <Muted>You two left together — the best ending this app has. 🎉</Muted>

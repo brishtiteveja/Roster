@@ -56,7 +56,7 @@ const BIOS = [
 ];
 
 const VOICES = [
-  'six people, one opening — I want it to matter',
+  'six people a week — I want it to matter',
   'I keep my picks small; a yes should cost something',
   'still learning what I actually want on a Tuesday',
   'here for the one conversation that keeps going',
@@ -118,7 +118,7 @@ export function makePlayer(): Persona {
     interests: ['live music', 'film', 'coffee', 'hiking'],
     is: ['a'],
     seeks: ['b'],
-    voice: 'my one opening — spending it where there is room',
+    voice: 'I would rather have one real thing than ten maybes',
     bio: 'Live music, film, long coffees, and getting outdoors. Here on purpose.',
     appeal: 0.6,
   };

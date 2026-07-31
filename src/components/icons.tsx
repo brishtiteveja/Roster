@@ -1,47 +1,58 @@
 import React from 'react';
-import Svg, { Path, Circle, Rect } from 'react-native-svg';
+import Svg, { Path, Circle, Rect, G } from 'react-native-svg';
 
-interface IconProps { color: string; size?: number }
+interface IconProps { color: string; size?: number; filled?: boolean }
 
-/** Card deck — "This week". */
-export function DeckIcon({ color, size = 24 }: IconProps) {
+/** Stacked cards — "This week". */
+export function DeckIcon({ color, size = 24, filled }: IconProps) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <Rect x="7" y="4" width="12" height="16" rx="3" stroke={color} strokeWidth={1.8} />
-      <Path d="M4.5 6.5 3.2 16.9a2.4 2.4 0 0 0 2 2.7" stroke={color} strokeWidth={1.8} strokeLinecap="round" />
-    </Svg>
-  );
-}
-
-/** Heart — "Connections". */
-export function HeartIcon({ color, size = 24, filled }: IconProps & { filled?: boolean }) {
-  return (
-    <Svg width={size} height={size} viewBox="0 0 24 24" fill={filled ? color : 'none'}>
-      <Path
-        d="M12 20s-7.2-4.6-9.2-9A5.2 5.2 0 0 1 12 6.6 5.2 5.2 0 0 1 21.2 11c-2 4.4-9.2 9-9.2 9Z"
-        stroke={color}
-        strokeWidth={1.8}
-        strokeLinejoin="round"
+      <G rotation={-14} origin="12, 12">
+        <Rect x="4" y="5" width="11" height="15" rx="3.2" stroke={color} strokeWidth={2} opacity={0.55} />
+      </G>
+      <Rect
+        x="9" y="4" width="11" height="15" rx="3.2"
+        stroke={color} strokeWidth={2} fill={filled ? color : 'none'} fillOpacity={filled ? 0.22 : 0}
       />
     </Svg>
   );
 }
 
-/** Pulse line — "Observatory". */
-export function PulseIcon({ color, size = 24 }: IconProps) {
+/** Heart — "Connections". */
+export function HeartIcon({ color, size = 24, filled }: IconProps) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <Path d="M3 13h4l2.4-6 4 10 2.2-4H21" stroke={color} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
+      <Path
+        d="M12 20s-7.2-4.6-9.2-9A5.2 5.2 0 0 1 12 6.6 5.2 5.2 0 0 1 21.2 11c-2 4.4-9.2 9-9.2 9Z"
+        stroke={color}
+        strokeWidth={2}
+        strokeLinejoin="round"
+        fill={filled ? color : 'none'}
+        fillOpacity={filled ? 0.28 : 0}
+      />
+    </Svg>
+  );
+}
+
+/** Radar sweep — "Observatory". */
+export function PulseIcon({ color, size = 24, filled }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Circle cx="12" cy="12" r="9" stroke={color} strokeWidth={2} opacity={0.4} />
+      <Circle cx="12" cy="12" r="4.6" stroke={color} strokeWidth={2} opacity={0.7} />
+      <Circle cx="12" cy="12" r="1.7" fill={color} />
+      <Path d="M12 12 19 6.2" stroke={color} strokeWidth={2} strokeLinecap="round" />
+      {filled ? <Circle cx="18.6" cy="6.6" r="2" fill={color} opacity={0.6} /> : null}
     </Svg>
   );
 }
 
 /** Person — "Profile". */
-export function PersonIcon({ color, size = 24 }: IconProps) {
+export function PersonIcon({ color, size = 24, filled }: IconProps) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <Circle cx="12" cy="8" r="3.6" stroke={color} strokeWidth={1.8} />
-      <Path d="M5 20a7 7 0 0 1 14 0" stroke={color} strokeWidth={1.8} strokeLinecap="round" />
+      <Circle cx="12" cy="8.4" r="3.6" stroke={color} strokeWidth={2} fill={filled ? color : 'none'} fillOpacity={filled ? 0.28 : 0} />
+      <Path d="M4.8 20a7.2 7.2 0 0 1 14.4 0" stroke={color} strokeWidth={2} strokeLinecap="round" />
     </Svg>
   );
 }

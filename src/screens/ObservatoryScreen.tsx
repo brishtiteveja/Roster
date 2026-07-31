@@ -20,22 +20,22 @@ export function ObservatoryScreen() {
       <Hero
         eyebrow="The observatory"
         title="Every rule, watched."
-        subtitle="The same deterministic engine that runs this app runs the twin. Here is your season, clearing by clearing."
+        subtitle="Your season, week by week."
       />
 
       <Card>
         <Eyebrow>This season, so far</Eyebrow>
         <StatRow>
-          <Stat n={totalIntros} label="introductions cleared" />
+          <Stat n={totalIntros} label="matches made" />
           <Stat n={`${avgZero}%`} label="avg zero-connection" tone={avgZero >= 15 ? 'bone' : 'verdigris'} />
           <Stat n={`${metrics.length}/${PARAMS.SEASON_WEEKS}`} label="weeks run" tone="bone" />
         </StatRow>
       </Card>
 
       <Card>
-        <Eyebrow>Introductions cleared per week</Eyebrow>
+        <Eyebrow>Matches per week</Eyebrow>
         {metrics.length === 0 ? (
-          <Muted>No clearings yet — seal a board to see the market move.</Muted>
+          <Muted>Nothing yet. Pick someone first.</Muted>
         ) : (
           metrics.map((m) => (
             <View key={m.week} style={styles.barRow}>
@@ -52,7 +52,7 @@ export function ObservatoryScreen() {
             </View>
           ))
         )}
-        {metrics.some((m) => m.playerCleared) && <Muted>Gold weeks are weeks you cleared an introduction.</Muted>}
+        {metrics.some((m) => m.playerCleared) && <Muted>Highlighted weeks are yours.</Muted>}
       </Card>
 
       <Card>

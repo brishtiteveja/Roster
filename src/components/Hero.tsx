@@ -15,12 +15,12 @@ export function Hero({
   avatarName?: string;
   tone?: 'lamp' | 'verdigris';
 }) {
-  const glow = tone === 'verdigris' ? 'rgba(134,184,161,0.18)' : 'rgba(233,180,76,0.18)';
+  const glow = tone === 'verdigris' ? 'rgba(15,185,138,0.16)' : 'rgba(255,79,110,0.16)';
   const accent = tone === 'verdigris' ? colors.verdigris : colors.lamp;
   return (
     <View style={styles.hero}>
       <LinearGradient
-        colors={[glow, 'rgba(30,36,64,0.0)']}
+        colors={[glow, 'rgba(255,255,255,0)']}
         style={StyleSheet.absoluteFill as any}
       />
       <View style={styles.row}>
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: colors.line,
-    backgroundColor: 'rgba(30,36,64,0.4)',
+    backgroundColor: colors.panel,
   },
   row: { flexDirection: 'row', alignItems: 'center', gap: space(1.75) },
   eyebrow: { ...t.eyebrow },

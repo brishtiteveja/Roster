@@ -119,7 +119,7 @@ export function ScreenScroll({ children }: { children: React.ReactNode }) {
   return (
     <ScrollView
       style={{ flex: 1, backgroundColor: colors.ground }}
-      contentContainerStyle={{ padding: space(2.5), paddingBottom: space(6), gap: space(2) }}
+      contentContainerStyle={{ padding: space(2.5), paddingBottom: space(13), gap: space(2) }}
       showsVerticalScrollIndicator={false}
     >
       {children}

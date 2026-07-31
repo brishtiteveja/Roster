@@ -2,19 +2,23 @@
 // palette). Kept in one place so the app reads as one object.
 
 export const colors = {
-  night: '#0C0F1B', // page void
-  ground: '#171B2E', // primary surface
-  panel: '#1E2440', // raised surface
-  panelHi: '#242B4D',
-  bone: '#ECE7DD', // primary text
-  muted: '#98A0C0', // secondary text / rails
-  lamp: '#E9B44C', // the light — highlight, "cleared", primary action
-  lampSoft: 'rgba(233,180,76,0.14)',
-  verdigris: '#86B8A1', // the good outcome — graduated, approved
-  verdigrisSoft: 'rgba(134,184,161,0.14)',
-  line: 'rgba(236,231,221,0.14)',
-  lineStrong: 'rgba(236,231,221,0.24)',
-  danger: '#D98A7B',
+  night: '#FFFFFF', // top-level chrome / text on coloured buttons
+  ground: '#FFF5F1', // warm page
+  panel: '#FFFFFF', // cards
+  panelHi: '#FFEDE6',
+  bone: '#2A1F35', // primary text
+  muted: '#7B7189', // secondary text
+  lamp: '#FF4F6E', // primary — the coral the app is built around
+  lampSoft: 'rgba(255,79,110,0.10)',
+  verdigris: '#0FB98A', // yes / kept / graduated
+  verdigrisSoft: 'rgba(15,185,138,0.12)',
+  line: 'rgba(42,31,53,0.10)',
+  lineStrong: 'rgba(42,31,53,0.18)',
+  danger: '#F2545B',
+  // accents for gradients and variety
+  violet: '#7C5CFF',
+  amber: '#FFB020',
+  sky: '#37C2F0',
 } as const;
 
 export const font = {

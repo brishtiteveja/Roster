@@ -4,12 +4,12 @@ import { colors, space } from '../theme';
 
 const STEPS = [
   { t: 'MON 12:00', d: 'declare', key: 'declare' },
-  { t: 'MON 18:00', d: 'clearing · new board', key: 'clear' },
+  { t: 'MON 18:00', d: 'matches · new six', key: 'clear' },
   { t: 'ALL WEEK', d: 'six · pick ≤3 sealed', key: 'board' },
   { t: 'SUN 18:00', d: 'picks close', key: 'close' },
 ] as const;
 
-/** The one heartbeat: the market clears every Monday at six. */
+/** The weekly rhythm: matches land every Monday at six. */
 export function Heartbeat({ active }: { active?: 'declare' | 'clear' | 'board' | 'close' }) {
   return (
     <View style={styles.wrap}>

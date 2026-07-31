@@ -2,23 +2,25 @@
   "expo": {
     "name": "Roster",
     "slug": "roster",
+    "scheme": "roster",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "dark",
-    "backgroundColor": "#0C0F1B",
+    "userInterfaceStyle": "light",
+    "backgroundColor": "#FFF5F1",
     "splash": {
-      "backgroundColor": "#0C0F1B",
+      "backgroundColor": "#FFF5F1",
       "resizeMode": "contain",
       "image": "./assets/splash-icon.png"
     },
     "ios": {
+      "bundleIdentifier": "com.roster.app",
       "supportsTablet": true,
-      "backgroundColor": "#0C0F1B"
+      "backgroundColor": "#FFF5F1"
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#0C0F1B",
+        "backgroundColor": "#FFF5F1",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
