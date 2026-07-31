@@ -66,7 +66,7 @@ function Shell() {
     <SafeAreaView style={styles.safe}>
       <StatusBar style="dark" />
       <View style={styles.header}>
-        <Text style={styles.wordmark}>ROSTER</Text>
+        <Text style={styles.wordmark}>PORCH</Text>
         <Text style={styles.tag} numberOfLines={1}>{phaseTag(state.phase, state.week)}</Text>
       </View>
 

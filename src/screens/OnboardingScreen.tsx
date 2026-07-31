@@ -6,6 +6,7 @@ import { useStore } from '../state/store';
 import { Body, Button, Card, Muted, ScreenScroll } from '../components/ui';
 import { Hero } from '../components/Hero';
 import { SwipeDeck, DeckCard } from '../components/SwipeDeck';
+import { WalkthroughScreen } from './WalkthroughScreen';
 
 const tag: Record<EvidenceSource, { label: string; tone: 'lamp' | 'verdigris' | 'muted' }> = {
   photo: { label: 'from your photos', tone: 'muted' },
@@ -26,6 +27,9 @@ export function OnboardingScreen() {
   const { onboardApprove } = useStore();
   const [kept, setKept] = useState<string[]>([]);
   const [dropped, setDropped] = useState<string[]>([]);
+  const [toured, setToured] = useState(false);
+
+  if (!toured) return <WalkthroughScreen onDone={() => setToured(true)} />;
 
   const done = kept.length + dropped.length >= CARDS.length;
 
