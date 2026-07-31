@@ -65,3 +65,43 @@ export function SparkIcon({ color, size = 16 }: IconProps) {
     </Svg>
   );
 }
+
+/** Chat bubble — message actions. */
+export function ChatIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Path
+        d="M21 11.6c0 4.2-4 7.4-9 7.4-1 0-2-.13-2.9-.37L4 20l1.2-3.4C3.8 15.3 3 13.5 3 11.6 3 7.4 7 4.2 12 4.2s9 3.2 9 7.4Z"
+        stroke={color} strokeWidth={2} strokeLinejoin="round"
+      />
+    </Svg>
+  );
+}
+
+/** Check — confirmations. */
+export function CheckIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Path d="M4.5 12.5 10 18 19.5 6.5" stroke={color} strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round" />
+    </Svg>
+  );
+}
+
+/** X — pass / let go. */
+export function XIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Path d="M6 6l12 12M18 6 6 18" stroke={color} strokeWidth={2.4} strokeLinecap="round" />
+    </Svg>
+  );
+}
+
+/** Flag — safety report. */
+export function FlagIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Path d="M5.5 21V4.5" stroke={color} strokeWidth={2.2} strokeLinecap="round" />
+      <Path d="M5.5 5c2.2-1.4 4.4-1.4 6.6 0s4.4 1.4 6.6 0v8.4c-2.2 1.4-4.4 1.4-6.6 0s-4.4-1.4-6.6 0" stroke={color} strokeWidth={2.2} strokeLinejoin="round" />
+    </Svg>
+  );
+}

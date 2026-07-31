@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { colors, space } from '../theme';
 import { Connection, PARAMS } from '../engine';
 import { offersMoreTime } from '../engine/checkpoint';
@@ -7,6 +7,38 @@ import { useStore } from '../state/store';
 import { partnerName, partnerId } from '../state/orchestration';
 import { Body, Button, Card, Eyebrow, Muted, Pill } from './ui';
 import { Avatar } from './Avatar';
+import { ChatIcon, CheckIcon, HeartIcon, XIcon, FlagIcon } from './icons';
+
+/** A small round icon action with a caption — replaces the old full-width buttons. */
+function ActionBtn({
+  icon: Icon, label, color, filled, badge, onPress,
+}: {
+  icon: (p: { color: string; size?: number; filled?: boolean }) => React.JSX.Element;
+  label: string;
+  color: string;
+  filled?: boolean;
+  badge?: number;
+  onPress: () => void;
+}) {
+  return (
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      style={({ pressed }) => [styles.action, { opacity: pressed ? 0.6 : 1 }]}
+    >
+      <View style={[styles.actionCircle, { borderColor: color }, filled && { backgroundColor: color, borderColor: color }]}>
+        <Icon color={filled ? '#FFFFFF' : color} size={21} />
+        {badge ? (
+          <View style={styles.actionBadge}>
+            <Text style={styles.actionBadgeText}>{badge}</Text>
+          </View>
+        ) : null}
+      </View>
+      <Text style={[styles.actionLabel, { color }]} numberOfLines={1}>{label}</Text>
+    </Pressable>
+  );
+}
 
 const stateTone: Record<string, 'lamp' | 'verdigris' | 'muted' | 'danger'> = {
   INTRODUCED: 'lamp',
@@ -84,19 +116,21 @@ export function ConnectionCard({ conn }: { conn: Connection }) {
       ) : graduated ? (
         <Muted>You two left together — the best ending this app has. 🎉</Muted>
       ) : (
-        <View style={{ gap: space(1) }}>
-          <Button
-            label={msgCount ? `Message · ${msgCount}` : 'Message'}
+        <View style={styles.actionsRow}>
+          <ActionBtn
+            icon={ChatIcon}
+            label="Message"
+            color={colors.lamp}
+            filled
+            badge={msgCount || undefined}
             onPress={() => openChat(conn.id)}
           />
           {!conn.dateAcknowledged && (
-            <Button label="We met — and it happened" kind="ghost" onPress={() => markMet(conn.id)} />
+            <ActionBtn icon={CheckIcon} label="We met" color={colors.bone} onPress={() => markMet(conn.id)} />
           )}
-          <View style={styles.row}>
-            <Button label="Go exclusive" kind="good" onPress={() => requestGraduate(conn.id)} style={{ flex: 1 }} />
-            <Button label="Let it go" kind="ghost" onPress={() => close(conn.id)} style={{ flex: 1 }} />
-          </View>
-          <Button label="Report a safety concern" kind="danger" onPress={() => report(conn.id)} />
+          <ActionBtn icon={HeartIcon} label="Exclusive" color={colors.verdigris} onPress={() => requestGraduate(conn.id)} />
+          <ActionBtn icon={XIcon} label="Let go" color={colors.muted} onPress={() => close(conn.id)} />
+          <ActionBtn icon={FlagIcon} label="Report" color={colors.danger} onPress={() => report(conn.id)} />
         </View>
       )}
     </Card>
@@ -107,4 +141,19 @@ const styles = StyleSheet.create({
   head: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   person: { flexDirection: 'row', gap: space(1.5), alignItems: 'center' },
   row: { flexDirection: 'row', gap: space(1) },
+  actionsRow: {
+    flexDirection: 'row', justifyContent: 'space-between',
+    paddingHorizontal: space(0.5), paddingTop: space(0.5),
+  },
+  action: { alignItems: 'center', gap: 5, minWidth: 56 },
+  actionCircle: {
+    width: 46, height: 46, borderRadius: 23, borderWidth: 1.6,
+    alignItems: 'center', justifyContent: 'center', backgroundColor: colors.panel,
+  },
+  actionBadge: {
+    position: 'absolute', top: -4, right: -6, minWidth: 17, height: 17, borderRadius: 9,
+    backgroundColor: colors.bone, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 4,
+  },
+  actionBadgeText: { color: '#FFFFFF', fontSize: 10, fontWeight: '800' },
+  actionLabel: { fontSize: 10.5, fontWeight: '700', letterSpacing: 0.2 },
 });
